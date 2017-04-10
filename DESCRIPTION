@@ -16,7 +16,8 @@ Imports:
     RUnit
 Suggests:
     compiler,
-    testthat
+    testthat,
+    covr
 Description: PCIC's implementation of Climdex routines for computation of
     extreme climate indices.
 License: GPL-3

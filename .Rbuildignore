@@ -9,3 +9,6 @@ CONTRIBUTING.rst
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^appveyor\.yml$
+^README\.Rmd$
+^README-.*\.png$
+^codecov\.yml$
