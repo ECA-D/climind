@@ -2438,7 +2438,7 @@ select.blocks.gt.length <- function(d, n, na.value=FALSE) {
 #' 
 #' @export
 climdex.quantile <- function(x, q=c(0, 0.25, 0.5, 0.75, 1)) {
-  return(.Call("c_quantile2", as.double(x), q, PACKAGE='climdex.pcic'))
+  return(.Call("c_quantile2", as.double(x), q, PACKAGE='climind'))
 }
 
 
