@@ -50,4 +50,3 @@ tr <- climdex.tr(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

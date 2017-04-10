@@ -80,4 +80,3 @@ tn90p <- climdex.tn90p(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

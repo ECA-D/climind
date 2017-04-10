@@ -4,8 +4,8 @@
 \name{ec.1018935}
 \alias{ec.1018935}
 \alias{ec.1018935.prec}
-\alias{ec.1018935.tmax}
 \alias{ec.1018935.tmin}
+\alias{ec.1018935.tmax}
 \title{EC example data}
 \format{A data frame consisting of year, day of year, precipitation or daily
 maximum temperature or daily minimum temperature on that day, and
@@ -25,4 +25,3 @@ data for running the Climdex package.
 \code{\link{climdexInput.raw}},
 http://www.climate.weatheroffice.gc.ca/prods_servs/index_e.html#cdcd .
 }
-

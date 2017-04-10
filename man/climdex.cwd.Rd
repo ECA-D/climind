@@ -58,4 +58,3 @@ cdd <- climdex.cdd(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

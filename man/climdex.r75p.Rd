@@ -51,4 +51,3 @@ r75p <- climdex.r75p(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

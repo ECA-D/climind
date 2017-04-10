@@ -50,4 +50,3 @@ prcptot <- climdex.prcptot(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

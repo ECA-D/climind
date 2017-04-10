@@ -51,4 +51,3 @@ fd <- number.days.op.threshold(ci@data$tmin,
 }
 \keyword{climate}
 \keyword{ts}
-

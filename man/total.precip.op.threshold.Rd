@@ -40,4 +40,3 @@ prec.sum <- total.precip.op.threshold(prec.dat, phony.date.factor, 1, ">=")
 }
 \keyword{climate}
 \keyword{ts}
-

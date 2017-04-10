@@ -29,4 +29,3 @@ index WD: the number of days where TG>75 & RR<25 (for wet days: days where preci
 }
 \keyword{climate}
 \keyword{ts}
-

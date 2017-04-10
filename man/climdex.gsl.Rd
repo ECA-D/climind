@@ -80,4 +80,3 @@ gsl <- climdex.gsl(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

@@ -33,4 +33,3 @@ sdii <- simple.precipitation.intensity.index(prec.dat, phony.date.factor)
 }
 \keyword{climate}
 \keyword{ts}
-

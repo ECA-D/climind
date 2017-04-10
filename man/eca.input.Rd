@@ -41,10 +41,9 @@ tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 
 ## Create 
 }
-\author{
-Christiana Photiadou (KNMI)
-}
 \references{
 \url{http://www.ecad.eu/}
 }
-
+\author{
+Christiana Photiadou (KNMI)
+}

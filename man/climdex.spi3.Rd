@@ -5,7 +5,7 @@
 \title{Standardized Precipitation Index 3-mon}
 \usage{
 climdex.spi3(ci, freq = c("monthly"), scale = 3, distribution = "Gamma",
-  fit = "ub-pwm", kernel = list(type = "rectangular", shift = 1),
+  fit = "ub-pwm", kernal = list(type = "rectangular", shift = 1),
   ref.start = NULL, ref.end = NULL)
 }
 \arguments{
@@ -19,7 +19,7 @@ climdex.spi3(ci, freq = c("monthly"), scale = 3, distribution = "Gamma",
 
 \item{fit}{name of the method used for computing the distribution function parameters (default 'ub-pwm')}
 
-\item{kernel}{optional, a list defining the type of kernel used for computing the SPI atscales higher than one. Defaults to unshifted rectangular kernel.}
+\item{kernal}{optional, a list defining the type of kernel used for computing the SPI atscales higher than one. Defaults to unshifted rectangular kernel.}
 
 \item{ref.start}{optional, starting point of the reference period used for computing the index. Defaults to NULL, indicating that the first value in data will be used as starting point.}
 
@@ -35,12 +35,11 @@ Adapted by ClimPACT2 and SPEI (arguments taken from here) libraries.
 Given a timeseries of daily precipitation amounts [mm], the function calculates the Standardized Precipitation Index (SPI) as it is created and defined by the SPEI library.
 This function computes the climdex index spi at multiple scales.
 }
-\author{
-Christiana Photiadou (KNMI)
-}
 \references{
 \url{http://www.ecad.eu/documents/atbd.pdf}
 
 \url{https://cran.r-project.org/web/packages/SPEI/SPEI.pdf}
 }
-
+\author{
+Christiana Photiadou (KNMI)
+}

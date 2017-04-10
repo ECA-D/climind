@@ -21,10 +21,9 @@ A vector containing a timeseries of the number of consecutive summer days in a g
 This function takes a climdexInput object as input and computes the climdex
 index cfd: the annual (or at different periods) count of consecutive frost days (TN < 0C)
 }
-\author{
-Christiana Photiadou (KNMI)
-}
 \references{
 \url{http://www.ecad.eu/indicesextremes/indicesdictionary.php}
 }
-
+\author{
+Christiana Photiadou (KNMI)
+}

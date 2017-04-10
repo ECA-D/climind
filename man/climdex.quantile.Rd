@@ -32,4 +32,3 @@ climdex.quantile(1:10, c(0.1, 0.5, 0.9))
 }
 \keyword{climate}
 \keyword{ts}
-

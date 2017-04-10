@@ -49,4 +49,3 @@ r20mm <- climdex.r20mm(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

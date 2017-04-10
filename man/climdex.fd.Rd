@@ -50,4 +50,3 @@ fd <- climdex.fd(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

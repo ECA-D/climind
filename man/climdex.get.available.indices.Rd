@@ -44,4 +44,3 @@ tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 ## Get list of functions which might be run.
 func.names <- climdex.get.available.indices(ci)
 }
-

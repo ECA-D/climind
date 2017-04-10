@@ -26,4 +26,3 @@ library(PCICt)
 last.mday <- get.last.monthday.of.year(as.PCICt("2011-01-01", cal="360"))
 
 }
-
