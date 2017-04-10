@@ -7,3 +7,5 @@ README.rst
 CONTRIBUTING.rst
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.travis\.yml$
+^appveyor\.yml$
