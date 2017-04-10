@@ -1,4 +1,4 @@
-library(climdex.pcic)
+library(climind)
 library(RUnit)
 
 climdex.pcic.test.intake.routines <- function() {

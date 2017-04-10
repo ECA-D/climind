@@ -1,4 +1,4 @@
 library(testthat)
-library(climdex.pcic)
+library(climind)
 
-test_check("climdex.pcic")
+test_check("climind")

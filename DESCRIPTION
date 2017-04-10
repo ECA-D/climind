@@ -1,10 +1,13 @@
 Package: climind
 Version: 1.0.0
 Date: 2017-04-10
-Title: PCIC Implementation of Climdex Routines
-Author: David Bronaugh <bronaugh@uvic.ca> for the Pacific Climate Impacts
-    Consortium
-Maintainer: James Hiebert <hiebert@uvic.ca>
+Title: ECAD Implementation of Climdex Routines
+Authors@R: as.person(c(
+      "Christiana Photiadou <christiana.photiadou@knmi.nl> [aut,cre]",
+      "Rebekka Posselt <rebekka.posselt@meteoswiss.ch> [aut]",
+      "David Bronaugh <bronaugh@uvic.ca> [aut]",
+      "KNMI [cph]"))
+Maintainer: ECAD <eca@knmi.nl>
 Depends:
     R (>= 2.12.0),
     PCICt (>= 0.5-4)
@@ -18,10 +21,10 @@ Suggests:
     compiler,
     testthat,
     covr
-Description: PCIC's implementation of Climdex routines for computation of
-    extreme climate indices.
+Description: ECAD's implementation of Climdex routines for computation of
+    extreme climate indices, based on climdex.pcic.
 License: GPL-3
 URL: http://www.r-project.org
 LazyData: yes
-BugReports: https://github.com/pacificclimate/climdex.pcic/issues/
+BugReports: https://github.com/ECA-D/climind/issues/
 RoxygenNote: 6.0.1
