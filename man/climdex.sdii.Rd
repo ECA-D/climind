@@ -55,4 +55,3 @@ sdii <- climdex.sdii(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

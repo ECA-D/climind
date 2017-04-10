@@ -24,7 +24,7 @@ climdexInput.csv(tmax.file = NULL, tmin.file = NULL, prec.file = NULL,
 \item{base.range}{Years to use for the baseline.}
 
 \item{na.strings}{Strings used for NA values; passed to
-\code{\link{read.csv}}.}
+\code{\link[utils]{read.csv}}.}
 
 \item{cal}{The calendar type used in the input files.}
 
@@ -107,4 +107,3 @@ prec.filename, date.types=list(list(fields=c("date"), format="\%Y-\%m-\%d")))}
 }
 \keyword{climate}
 \keyword{ts}
-

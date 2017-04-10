@@ -51,4 +51,3 @@ rnnmm <- climdex.rnnmm(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

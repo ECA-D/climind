@@ -52,4 +52,3 @@ altcwd <- spell.length.max(prec.dat, phony.date.factor, 1, ">=", FALSE)
 }
 \keyword{climate}
 \keyword{ts}
-

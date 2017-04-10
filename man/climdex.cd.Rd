@@ -31,4 +31,3 @@ Note: this function doesnt use directly tavg but derives it from tmax & tmin (co
 }
 \keyword{climate}
 \keyword{ts}
-

@@ -51,4 +51,3 @@ txn <- climdex.txn(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

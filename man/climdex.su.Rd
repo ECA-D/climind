@@ -50,4 +50,3 @@ su <- climdex.su(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

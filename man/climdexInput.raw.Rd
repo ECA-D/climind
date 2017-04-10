@@ -147,4 +147,3 @@ tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 }
 \keyword{climate}
 \keyword{ts}
-

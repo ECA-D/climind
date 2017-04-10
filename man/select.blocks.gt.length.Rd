@@ -35,4 +35,3 @@ foo <- select.blocks.gt.length(c(rep(TRUE, 4), FALSE, rep(TRUE, 3)), 3)
 }
 \keyword{climate}
 \keyword{ts}
-

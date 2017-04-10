@@ -4,6 +4,7 @@
 \name{climdex.pcic}
 \alias{climdex.pcic}
 \alias{climdex.pcic-package}
+\alias{climdex.pcic-package}
 \title{climdex.pcic, an implementation of the ETCCDI climate change indices.}
 \description{
 This package implements the ETCCDI's 27 core climate change indices
@@ -52,4 +53,3 @@ temperature extremes. Journal of Climate 18.11 (2005):1641-.
 }
 \keyword{climate}
 \keyword{ts}
-

@@ -76,4 +76,3 @@ tx90p <- percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays,
 }
 \keyword{climate}
 \keyword{ts}
-

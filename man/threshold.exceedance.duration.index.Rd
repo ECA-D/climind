@@ -63,4 +63,3 @@ rep(1:5, 2), rep(1, 5), ">=", 2, FALSE, 1)
 }
 \keyword{climate}
 \keyword{ts}
-

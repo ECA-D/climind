@@ -50,4 +50,3 @@ id <- climdex.id(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

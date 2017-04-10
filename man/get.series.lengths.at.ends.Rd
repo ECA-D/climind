@@ -34,4 +34,3 @@ TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE))
 }
 \keyword{climate}
 \keyword{ts}
-

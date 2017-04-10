@@ -20,10 +20,9 @@ A vector containing the HI
 \description{
 This function computes the climdex index HI:
 }
-\author{
-Rebekka Posselt (MeteoSwiss)
-}
 \references{
 \url{http://www.ecad.eu/indicesextremes/indicesdictionary.php}
 }
-
+\author{
+Rebekka Posselt (MeteoSwiss)
+}

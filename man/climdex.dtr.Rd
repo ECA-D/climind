@@ -56,4 +56,3 @@ dtr <- climdex.dtr(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

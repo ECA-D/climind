@@ -74,4 +74,3 @@ csdi <- climdex.csdi(ci)
 }
 \keyword{climate}
 \keyword{ts}
-

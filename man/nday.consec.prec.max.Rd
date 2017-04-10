@@ -53,4 +53,3 @@ rx5day <- nday.consec.prec.max(ci@data$prec, ci@date.factors$monthly, 5)
 }
 \keyword{climate}
 \keyword{ts}
-

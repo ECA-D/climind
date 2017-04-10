@@ -643,7 +643,7 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, t
 #' @param data.columns Column names for tmin, tmax, and prec data.
 #' @param date.types Column names for tmin, tmax, and prec data (see notes).
 #' @param na.strings Strings used for NA values; passed to
-#' \code{\link{read.csv}}.
+#' \code{\link[utils]{read.csv}}.
 #' @param cal The calendar type used in the input files.
 #' @template climdexInput_common_params
 #' @param northern.hemisphere Whether this point is in the northern hemisphere.
@@ -1432,6 +1432,7 @@ climdex.prcptot <- function(ci, freq=c("monthly", "annual")) {
 #' @references \url{http://www.ecad.eu/documents/atbd.pdf}
 #' @references \url{https://cran.r-project.org/web/packages/SPEI/SPEI.pdf}
 #' @importFrom SPEI spi
+#' @importFrom stats ts
 #' 
 #' @export
 climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", fit="ub-pwm", kernal=list(type="rectangular",shift=1), ref.start=NULL, ref.end=NULL){
@@ -1443,7 +1444,7 @@ climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", f
   ts.start <- c(as.numeric(format(ci@dates[1],format="%Y")),1)
   ts.end <- c(as.numeric(format(ci@dates[length(ci@dates)],format="%Y")),12)
   
-  data.spi <- ts(prec_sum,freq=12,start=ts.start,end=ts.end)
+  data.spi <- ts(prec_sum, frequency = 12,start = ts.start, end = ts.end)
   
   spi_col <- SPEI::spi(data.spi, scale=scale,ref.start=ref.start,ref.end=ref.end,
                  distribution=distribution,fit=fit,kernal=kernal,na.rm=TRUE)
@@ -1479,6 +1480,7 @@ climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", f
 #' @references \url{http://www.ecad.eu/documents/atbd.pdf}
 #' @references \url{https://cran.r-project.org/web/packages/SPEI/SPEI.pdf}
 #' @importFrom SPEI spi
+#' @importFrom stats ts
 #' 
 #' @export
 climdex.spi6 <- function(ci, freq=c("monthly"), scale=6, distribution="Gamma", fit="ub-pwm", kernal=list(type="rectangular",shift=1), ref.start=NULL, ref.end=NULL){
@@ -1490,7 +1492,7 @@ climdex.spi6 <- function(ci, freq=c("monthly"), scale=6, distribution="Gamma", f
   ts.start <- c(as.numeric(format(ci@dates[1],format="%Y")),1)
   ts.end <- c(as.numeric(format(ci@dates[length(ci@dates)],format="%Y")),12)
   
-  data.spi <- ts(prec_sum,freq=12,start=ts.start,end=ts.end)
+  data.spi <- ts(prec_sum, frequency = 12, start = ts.start, end = ts.end)
   
   spi_col <- SPEI::spi(data.spi, scale=scale,ref.start=ref.start,ref.end=ref.end,
                  distribution=distribution,fit=fit,kernal=kernal,na.rm=TRUE)
@@ -1588,7 +1590,7 @@ days.op.threshold <- function(temp, dates, jdays, date.factor, threshold.outside
   ## Don't use in-base thresholds with data shorter than two years; no years to replace with.
   if(sum(inset) > 0 && length(dates) >= 360 * 2) {
     jdays.base <- jdays[inset]
-    years.base <- climdex.pcic:::get.years(dates[inset])
+    years.base <- get.years(dates[inset])
     
     ## Get number of base years, subset temp data to base period only.
     temp.base <- temp[inset]
@@ -1598,7 +1600,7 @@ days.op.threshold <- function(temp, dates, jdays, date.factor, threshold.outside
     ## Linearize thresholds, then compare them to the temperatures
     bdim <- dim(base.thresholds)
     dim(base.thresholds) <- c(bdim[1] * bdim[2], bdim[3])
-    yday.byr.indices <- jdays.base + (years.base - climdex.pcic:::get.years(base.range)[1]) * bdim[1]
+    yday.byr.indices <- jdays.base + (years.base - get.years(base.range)[1]) * bdim[1]
     f.result <- f(rep(temp.base, byrs - 1), base.thresholds[yday.byr.indices,])
     dim(f.result) <- c(length(yday.byr.indices), bdim[3])
     

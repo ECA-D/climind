@@ -43,4 +43,3 @@ If date.factor is omitted, daily series will be returned.
 }
 \keyword{climate}
 \keyword{ts}
-

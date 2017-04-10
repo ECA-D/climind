@@ -63,4 +63,3 @@ rx5day <- climdex.rx5day(ci)
 }
 \keyword{climate}
 \keyword{ts}
-
