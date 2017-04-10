@@ -1,6 +1,6 @@
-Package: climdex.pcic
-Version: 1.1-6
-Date: 2015-01-30
+Package: climind
+Version: 1.0.0
+Date: 2017-04-10
 Title: PCIC Implementation of Climdex Routines
 Author: David Bronaugh <bronaugh@uvic.ca> for the Pacific Climate Impacts
     Consortium

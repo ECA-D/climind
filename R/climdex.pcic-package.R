@@ -25,7 +25,7 @@
 #' the definitions of the indices, and to have sufficiently readable and
 #' concise code as to facilitate easy verification by inspection.
 #' 
-#' @name climdex.pcic
+#' @name climind
 #' @aliases climdex.pcic-package
 #' @docType package
 #' @seealso \code{\link{climdexInput.raw}}, \code{\link{climdexInput.csv}},
@@ -43,7 +43,7 @@
 #' Zhang, X., 2005: Avoiding inhomogeneity in percentile-based indices of
 #' temperature extremes. Journal of Climate 18.11 (2005):1641-.
 #' @keywords climate ts
-#' @useDynLib climdex.pcic
+#' @useDynLib climind
 #' @import PCICt Rcpp methods caTools
 NULL
 

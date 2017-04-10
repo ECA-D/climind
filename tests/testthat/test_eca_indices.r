@@ -7,7 +7,7 @@
 #' 5. We don't test yet the sun_rel and the snow_new (related indices)
 
 #rm(list = ls())
-library(climdex.pcic)
+library(climind)
 library(testthat)
 
 ####################################
