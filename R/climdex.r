@@ -1423,7 +1423,7 @@ climdex.prcptot <- function(ci, freq=c("monthly", "annual")) {
 #' @param scale an integer, representing the time scale at which the SPI will be computed. Default is 3
 #' @param distribution name of the distribution function to be used for computing the SPI (default ’Gamma’)
 #' @param fit name of the method used for computing the distribution function parameters (default 'ub-pwm')
-#' @param kernel optional, a list defining the type of kernel used for computing the SPI atscales higher than one. Defaults to unshifted rectangular kernel.
+#' @param kernal optional, a list defining the type of kernel used for computing the SPI atscales higher than one. Defaults to unshifted rectangular kernel.
 #' @param ref.start optional, starting point of the reference period used for computing the index. Defaults to NULL, indicating that the first value in data will be used as starting point.
 #' @param ref.end optional, ending  point  of  the  reference  period  used  for  computing  the index. Defaults to NULL, indicating that the last value in data will be used as ending point.
 #' @param ... For more details please refer to the SPEI
@@ -1434,7 +1434,7 @@ climdex.prcptot <- function(ci, freq=c("monthly", "annual")) {
 #' @importFrom SPEI spi
 #' 
 #' @export
-climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", fit="ub-pwm", kernel=list(type="rectangular",shift=1), ref.start=NULL, ref.end=NULL){
+climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", fit="ub-pwm", kernal=list(type="rectangular",shift=1), ref.start=NULL, ref.end=NULL){
   
   spiprec <- ci@data$prec
   spifactor <- ci@date.factors$monthly
@@ -1481,7 +1481,7 @@ climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", f
 #' @importFrom SPEI spi
 #' 
 #' @export
-climdex.spi6 <- function(ci, freq=c("monthly"), scale=6, distribution="Gamma", fit="ub-pwm", kernel=list(type="rectangular",shift=1), ref.start=NULL, ref.end=NULL){
+climdex.spi6 <- function(ci, freq=c("monthly"), scale=6, distribution="Gamma", fit="ub-pwm", kernal=list(type="rectangular",shift=1), ref.start=NULL, ref.end=NULL){
   
   spiprec <- ci@data$prec
   spifactor <- ci@date.factors$monthly
