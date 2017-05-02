@@ -23,6 +23,3 @@ This function computes the climdex index HI:
 \references{
 \url{http://www.ecad.eu/indicesextremes/indicesdictionary.php}
 }
-\author{
-Rebekka Posselt (MeteoSwiss)
-}

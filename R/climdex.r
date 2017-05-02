@@ -274,7 +274,11 @@ get.num.days.in.range <- function(x, date.range) {
 
 
 ## Check that arguments to climdexInput.raw et al are complete enough and valid enough.
-check.basic.argument.validity <- function(tmax, tmin, prec, tmax.dates, tmin.dates, prec.dates, base.range=c(1961, 1990), n=5, tavg=NULL, tavg.dates=NULL) {
+check.basic.argument.validity <- function(tmax, tmin, prec, 
+                                          tmax.dates, tmin.dates, prec.dates, 
+                                          base.range=c(1961, 1990), n=5, 
+                                          tavg=NULL, tavg.dates=NULL) {
+  
   check.var <- function(var, var.dates, var.name) {
     if(is.null(var) != is.null(var.dates))
       stop(paste("If passing in", var, ", must pass in", var, "dates too.."))
@@ -528,17 +532,27 @@ get.outofbase.quantiles <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=
 #' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 #'
 #' @export
-climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, tmin.dates=NULL, prec.dates=NULL,
-                             base.range=c(1961, 1990), n=5, northern.hemisphere=TRUE,
-                             tavg=NULL, tavg.dates=NULL, quantiles=NULL, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), 
-                             max.missing.days=c(annual=15, monthly=3), min.base.data.fraction.present=0.1) {
+climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, 
+                             tmax.dates=NULL, tmin.dates=NULL, prec.dates=NULL,
+                             base.range=c(1961, 1990), n=5, 
+                             northern.hemisphere=TRUE,
+                             tavg=NULL, tavg.dates=NULL, 
+                             quantiles=NULL, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), 
+                             max.missing.days=c(annual=15, halfyear=10, seasonal=8, monthly=3),
+                             min.base.data.fraction.present=0.1) {
+  
   ## Make sure all of these arguments are valid...
-  check.basic.argument.validity(tmax, tmin, prec, tmax.dates, tmin.dates, prec.dates, base.range, n, tavg, tavg.dates)
+  check.basic.argument.validity(tmax, tmin, prec, 
+                                tmax.dates, tmin.dates, prec.dates, 
+                                base.range, n, 
+                                tavg, tavg.dates)
 
-  stopifnot(length(max.missing.days) == 2 && all(c("annual", "monthly") %in% names(max.missing.days)))
+  stopifnot(length(max.missing.days) == 4 && all(c("annual", "halfyear", "seasonal", "monthly") %in% names(max.missing.days)))
+  
   stopifnot(is.numeric(min.base.data.fraction.present) && length(min.base.data.fraction.present) == 1)
   
   d.list <- list(tmin.dates, tmax.dates, prec.dates, tavg.dates)
+  
   all.dates <- do.call(c, d.list[!sapply(d.list, is.null)])
   last.day.of.year <- get.last.monthday.of.year(all.dates)
   cal <- attr(all.dates, "cal")
@@ -553,12 +567,35 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, t
   jdays <- get.jdays.replaced.feb29(get.jdays(date.series))
   
   ## Factors for dividing data up
-  date.factors <- list(annual=factor(format(date.series, format="%Y", tz="GMT")), monthly=factor(format(date.series, format="%Y-%m", tz="GMT")))
-
+  date.months <- as.numeric(format(date.series, format="%m", tz="GMT"))
+  date.years  <- as.numeric(format(date.series, format="%Y", tz="GMT"))
+  # get factors for seasons
+  # Winter month D of prev year and JF of next year belong together, Year belongs to Jan => increase year of prev Dec by 1
+  seas.years <- date.years
+  seas.seas  <- date.months %/% 3 + 1
+  seas.idx   <- which(seas.seas == 5)
+  seas.years[seas.idx] <- seas.years[seas.idx]+1
+  seas.seas[seas.idx]  <- 1
+  # get factors for half years (winter (ONDJFM) & summer (APJJAS))
+  # winter months OND of prev year and JFM of next year belong together, Year belongs to Jan => increase year of prev OND by 1
+  half.years <- date.years
+  half.half  <- (date.months+2) %/% 6 + 1
+  half.idx   <- which(half.half == 3)
+  half.years[half.idx] <- half.years[half.idx]+1
+  half.half[half.idx]  <- 1
+  
+  # set up date.factors list
+  date.factors <- list(annual=factor(format(date.series, format="%Y", tz="GMT")), 
+                       halfyear=factor(paste(half.years,half.half,sep="-")),
+                       seasonal=factor(paste(seas.years,seas.seas,sep="-")),
+                       monthly=factor(format(date.series, format="%Y-%m", tz="GMT")))
+  
   ## Filled data...
   var.list <- c("tmax", "tmin", "prec", "tavg")
   present.var.list <- var.list[sapply(var.list, function(x) !is.null(get(x)))]
-  filled.list <- sapply(present.var.list, function(x) { return(create.filled.series(get(x), trunc(get(paste(x, "dates", sep="."))), date.series)) }, simplify=FALSE)
+  
+  filled.list <- sapply(present.var.list, function(x) { 
+    return(create.filled.series(get(x), trunc(get(paste(x, "dates", sep="."))), date.series)) }, simplify=FALSE)
   if(is.null(tavg) && !is.null(tmin) && !is.null(tmax))
     filled.list$tavg <- (filled.list$tmax + filled.list$tmin) / 2
 
@@ -575,9 +612,10 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, t
   have.quantiles <- all(present.var.list %in% names(quantiles))
 
   ## NA masks
-  namasks <- list(annual=lapply(filled.list, get.na.mask, date.factors$annual, max.missing.days['annual']), monthly=lapply(filled.list, get.na.mask, date.factors$monthly, max.missing.days['monthly']))
-  namasks$annual <- lapply(names(namasks$annual), function(v) { d <- namasks$annual[[v]] * as.numeric(tapply(namasks$monthly[[v]], rep(seq_along(namasks$annual[[v]]), each=12), prod)); dimnames(d) <- dim(d) <- NULL; d })
-  names(namasks$annual) <- names(namasks$monthly)
+  namasks <- list(annual=lapply(filled.list, get.na.mask, date.factors$annual, max.missing.days['annual']), 
+                  halfyear=lapply(filled.list, get.na.mask, date.factors$halfyear, max.missing.days['halfyear']),
+                  seasonal=lapply(filled.list, get.na.mask, date.factors$seasonal, max.missing.days['seasonal']),
+                  monthly=lapply(filled.list, get.na.mask, date.factors$monthly, max.missing.days['monthly']))
   
   ## Pad data passed as base if we're missing endpoints...
   if(!have.quantiles) {
@@ -593,7 +631,9 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, t
     quantiles <- as.environment(quantiles)
   }
   
-  return(new("climdexInput", data=filled.list, quantiles=quantiles, namasks=namasks, dates=date.series, jdays=jdays, base.range=bs.date.range, date.factors=date.factors, northern.hemisphere=northern.hemisphere, max.missing.days=max.missing.days))
+  return(new("climdexInput", data=filled.list, quantiles=quantiles, namasks=namasks, 
+             dates=date.series, jdays=jdays, base.range=bs.date.range, date.factors=date.factors, 
+             northern.hemisphere=northern.hemisphere, max.missing.days=max.missing.days))
 }
 
 #' Method for creating climdexInput object from CSV files
@@ -662,11 +702,17 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, t
 #'
 #' @export
 climdexInput.csv <- function(tmax.file=NULL, tmin.file=NULL, prec.file=NULL,
-                             data.columns=list(tmin="tmin", tmax="tmax", prec="prec"), base.range=c(1961, 1990),
-                             na.strings=NULL, cal="gregorian", date.types=NULL, n=5, northern.hemisphere=TRUE,
-                             tavg.file=NULL, quantiles=NULL, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), max.missing.days=c(annual=15, monthly=3), min.base.data.fraction.present=0.1) {
+                             data.columns=list(tmin="tmin", tmax="tmax", prec="prec"), 
+                             base.range=c(1961, 1990),
+                             na.strings=NULL, cal="gregorian", date.types=NULL, 
+                             n=5, northern.hemisphere=TRUE,
+                             tavg.file=NULL, 
+                             quantiles=NULL, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), 
+                             max.missing.days=c(annual=15, monthly=3), 
+                             min.base.data.fraction.present=0.1) {
+  
   get.and.check.data <- function(fn, datacol) {
-    if(!is.null(fn)) {
+    if(!is.null(fn)){ 
       dat <- read.csv(fn, na.strings=na.strings)
       if(!(datacol %in% names(dat)))
         stop("Data column not found in tmin data.")
