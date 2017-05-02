@@ -57,9 +57,11 @@ valid.climdexInput <- function(x) {
     errors <- c(errors, "Data fields, dates, and date factors must all be of the same length")
 
   ## Check that namasks have columns for each of the variables
-  if(!all(c("annual", "monthly") %in% names(x@namasks)) || !all(present.data.vars %in% names(x@namasks$annual) & present.data.vars %in% names(x@namasks$monthly)))
-    errors <- c(errors, "NA mask for monthly and annual must contain data for all variables supplied.")
-
+  if(!all(c("annual", "halfyear", "seasonal", "monthly") %in% names(x@namasks)) || 
+     !all(present.data.vars %in% names(x@namasks$annual) & present.data.vars %in% names(x@namasks$halfyear) &
+          present.data.vars %in% names(x@namasks$seasonal) & present.data.vars %in% names(x@namasks$monthly)))
+    errors <- c(errors, "NA mask for monthly, seasonal, halfyear and annual must contain data for all variables supplied.")
+  
   ## Check that appropriate thresholds are present.
   need.base.data <- get.num.days.in.range(x@dates, x@base.range) > 0
   errors <- do.call(c, c(list(errors), lapply(intersect(present.data.vars, c("tmax", "tmin", "prec")), function(n) {
@@ -708,7 +710,7 @@ climdexInput.csv <- function(tmax.file=NULL, tmin.file=NULL, prec.file=NULL,
                              n=5, northern.hemisphere=TRUE,
                              tavg.file=NULL, 
                              quantiles=NULL, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), 
-                             max.missing.days=c(annual=15, monthly=3), 
+                             max.missing.days=c(annual=15, halfyear=10, seasonal=8, monthly=3),
                              min.base.data.fraction.present=0.1) {
   
   get.and.check.data <- function(fn, datacol) {
@@ -732,7 +734,13 @@ climdexInput.csv <- function(tmax.file=NULL, tmin.file=NULL, prec.file=NULL,
   tavg <- get.and.check.data(tavg.file, data.columns$tavg)
   prec <- get.and.check.data(prec.file, data.columns$prec)
   
-  return(climdexInput.raw(tmax=tmax$dat, tmin=tmin$dat, prec=prec$dat, tmax.dates=tmax$dates, tmin.dates=tmin$dates, prec.dates=prec$dates, base.range=base.range, n=n, northern.hemisphere=northern.hemisphere, tavg=tavg$dat, tavg.dates=tavg$dates, quantiles=quantiles, temp.qtiles=temp.qtiles, prec.qtiles=prec.qtiles, max.missing.days=max.missing.days, min.base.data.fraction.present=min.base.data.fraction.present))
+  return(climdexInput.raw(tmax=tmax$dat, tmin=tmin$dat, prec=prec$dat, 
+                          tmax.dates=tmax$dates, tmin.dates=tmin$dates, prec.dates=prec$dates, 
+                          base.range=base.range, n=n, northern.hemisphere=northern.hemisphere, 
+                          tavg=tavg$dat, tavg.dates=tavg$dates, 
+                          quantiles=quantiles, temp.qtiles=temp.qtiles, prec.qtiles=prec.qtiles, 
+                          max.missing.days=max.missing.days, 
+                          min.base.data.fraction.present=min.base.data.fraction.present))
 }
 
 #' Frost Days
@@ -752,7 +760,7 @@ climdexInput.csv <- function(tmax.file=NULL, tmin.file=NULL, prec.file=NULL,
 #' @template get_generic_example
 #' 
 #' @export
-climdex.fd <- function(ci, freq=c("monthly", "annual")) { 
+climdex.fd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmin)); 
   return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 0, "<") * ci@namasks[[match.arg(freq)]]$tmin) }
 
@@ -772,7 +780,7 @@ climdex.fd <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.su <- function(ci, freq=c("monthly", "annual")) { 
+climdex.su <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmax)); 
   return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 25, ">") * ci@namasks[[match.arg(freq)]]$tmax) }
 
@@ -792,7 +800,7 @@ climdex.su <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.id <- function(ci,  freq=c("monthly", "annual")) { 
+climdex.id <- function(ci,  freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmax)); 
   return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 0, "<") * ci@namasks[[match.arg(freq)]]$tmax) }
 
@@ -812,7 +820,7 @@ climdex.id <- function(ci,  freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.tr <- function(ci, freq=c("monthly", "annual")) { 
+climdex.tr <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmin)); return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 20, ">") * ci@namasks[[match.arg(freq)]]$tmin) }
 
 #' Growing Season Length
@@ -902,7 +910,7 @@ climdex.gsl <- function(ci, gsl.mode=c("GSL", "GSL_first", "GSL_max", "GSL_sum")
 #' @template get_generic_example
 #' 
 #' @export
-climdex.txx <- function(ci, freq=c("monthly", "annual")) { 
+climdex.txx <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmax)); 
   return(suppressWarnings(tapply.fast(ci@data$tmax, ci@date.factors[[match.arg(freq)]], max, na.rm=TRUE)) * ci@namasks[[match.arg(freq)]]$tmax) }
 
@@ -922,7 +930,7 @@ climdex.txx <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.tnx <- function(ci, freq=c("monthly", "annual")) { 
+climdex.tnx <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmin)); 
   return(suppressWarnings(tapply.fast(ci@data$tmin, ci@date.factors[[match.arg(freq)]], max, na.rm=TRUE)) * ci@namasks[[match.arg(freq)]]$tmin) }
 
@@ -942,7 +950,7 @@ climdex.tnx <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.txn <- function(ci, freq=c("monthly", "annual")) { 
+climdex.txn <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmax)); 
   return(suppressWarnings(tapply.fast(ci@data$tmax, ci@date.factors[[match.arg(freq)]], min, na.rm=TRUE)) * ci@namasks[[match.arg(freq)]]$tmax) }
 
@@ -962,7 +970,7 @@ climdex.txn <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.tnn <- function(ci, freq=c("monthly", "annual")) { 
+climdex.tnn <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmin)); 
   return(suppressWarnings(tapply.fast(ci@data$tmin, ci@date.factors[[match.arg(freq)]], min, na.rm=TRUE)) * ci@namasks[[match.arg(freq)]]$tmin) }
 
@@ -986,7 +994,7 @@ climdex.tnn <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.tn10p <- function(ci, freq=c("monthly", "annual")) { 
+climdex.tn10p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmin) && !is.null(ci@quantiles$tmin)); 
   return(percent.days.op.threshold(ci@data$tmin, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmin$outbase$q10, ci@quantiles$tmin$inbase$q10, ci@base.range, "<", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmin) }
 
@@ -1008,7 +1016,7 @@ climdex.tn10p <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.tx10p <- function(ci, freq=c("monthly", "annual")) { 
+climdex.tx10p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmax) && !is.null(ci@quantiles$tmax)); 
   return(percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmax$outbase$q10, ci@quantiles$tmax$inbase$q10, ci@base.range, "<", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmax) }
 
@@ -1030,7 +1038,7 @@ climdex.tx10p <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.tn90p <- function(ci, freq=c("monthly", "annual")) { 
+climdex.tn90p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmin) && !is.null(ci@quantiles$tmin)); 
   return(percent.days.op.threshold(ci@data$tmin, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmin$outbase$q90, ci@quantiles$tmin$inbase$q90, ci@base.range, ">", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmin) }
 
@@ -1052,7 +1060,7 @@ climdex.tn90p <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.tx90p <- function(ci, freq=c("monthly", "annual")) { 
+climdex.tx90p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmax) && !is.null(ci@quantiles$tmax)); 
   return(percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmax$outbase$q90, ci@quantiles$tmax$inbase$q90, ci@base.range, ">", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmax) }
 
@@ -1079,7 +1087,7 @@ climdex.tx90p <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.wsdi <- function(ci, freq=c("monthly", "annual"), spells.can.span.years=FALSE) { 
+climdex.wsdi <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), spells.can.span.years=FALSE) { 
   stopifnot(!is.null(ci@data$tmax) && !is.null(ci@quantiles$tmax)) 
   max_missing_days = ci@max.missing.days
   stopifnot(sum(match.arg(freq) == names(max_missing_days)) == 1)      # Check if we only get one TRUE, behavior is undefined if not
@@ -1109,7 +1117,7 @@ climdex.wsdi <- function(ci, freq=c("monthly", "annual"), spells.can.span.years=
 #' @template get_generic_example
 #' 
 #' @export
-climdex.csdi <- function(ci, freq=c("monthly", "annual"), spells.can.span.years=FALSE) { 
+climdex.csdi <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), spells.can.span.years=FALSE) { 
   stopifnot(!is.null(ci@data$tmin) && !is.null(ci@quantiles$tmin)); 
   max_missing_days = ci@max.missing.days
   stopifnot(sum(match.arg(freq) == names(max_missing_days)) == 1)      # Check if we only get one TRUE, behavior is undefined if not
@@ -1136,7 +1144,7 @@ climdex.csdi <- function(ci, freq=c("monthly", "annual"), spells.can.span.years=
 #' @template get_generic_example
 #' 
 #' @export
-climdex.dtr <- function(ci, freq=c("monthly", "annual")) { 
+climdex.dtr <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$tmin) && !is.null(ci@data$tmax) && !is.null(ci@data$tavg)); 
   return(mean.daily.temp.range(ci@data$tmax, ci@data$tmin, ci@date.factors[[match.arg(freq)]]) * ci@namasks[[match.arg(freq)]]$tavg) }
 
@@ -1156,7 +1164,7 @@ climdex.dtr <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.rx1day <- function(ci, freq=c("monthly", "annual")) { 
+climdex.rx1day <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec)); 
   return(nday.consec.prec.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1) * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1178,7 +1186,7 @@ climdex.rx1day <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.rx5day <- function(ci, freq=c("monthly", "annual"), center.mean.on.last.day=FALSE) { 
+climdex.rx5day <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), center.mean.on.last.day=FALSE) { 
   stopifnot(!is.null(ci@data$prec)); 
   return(nday.consec.prec.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], 5, center.mean.on.last.day) * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1201,7 +1209,7 @@ climdex.rx5day <- function(ci, freq=c("monthly", "annual"), center.mean.on.last.
 #' @template get_generic_example
 #' 
 #' @export
-climdex.sdii <- function(ci, freq=c("monthly", "annual")) { 
+climdex.sdii <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec)); 
   return(simple.precipitation.intensity.index(ci@data$prec, ci@date.factors[[match.arg(freq)]]) * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1220,7 +1228,7 @@ climdex.sdii <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.r10mm <- function(ci, freq=c("monthly", "annual")) {
+climdex.r10mm <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) {
   stopifnot(!is.null(ci@data$prec)); 
   return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 10, ">=") * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1239,7 +1247,7 @@ climdex.r10mm <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.r20mm <- function(ci, freq=c("monthly", "annual")) { 
+climdex.r20mm <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec)); 
   return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 20, ">=") * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1259,7 +1267,7 @@ climdex.r20mm <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.rnnmm <- function(ci, threshold=1, freq=c("monthly", "annual")) {
+climdex.rnnmm <- function(ci, threshold=1, freq=c("monthly", "annual", "halfyear", "seasonal")) {
   stopifnot(!is.null(ci@data$prec));
   if(!is.numeric(threshold) || length(threshold) != 1) stop("Please specify a single numeric threshold value.");
 
@@ -1280,7 +1288,7 @@ climdex.rnnmm <- function(ci, threshold=1, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.cdd <- function(ci, freq=c("monthly", "annual"), spells.can.span.years=TRUE) { 
+climdex.cdd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), spells.can.span.years=TRUE) { 
   stopifnot(!is.null(ci@data$prec)); 
   return(spell.length.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, "<", spells.can.span.years) * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1299,7 +1307,7 @@ climdex.cdd <- function(ci, freq=c("monthly", "annual"), spells.can.span.years=T
 #' @template get_generic_example
 #' 
 #' @export
-climdex.cwd <- function(ci, freq=c("monthly", "annual"), spells.can.span.years=TRUE) { 
+climdex.cwd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), spells.can.span.years=TRUE) { 
   stopifnot(!is.null(ci@data$prec)); 
   return(spell.length.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, ">=", spells.can.span.years) * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1320,7 +1328,7 @@ climdex.cwd <- function(ci, freq=c("monthly", "annual"), spells.can.span.years=T
 #' @template get_generic_example
 #' 
 #' @export
-climdex.r75p <- function(ci, freq=c("monthly", "annual")) { 
+climdex.r75p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec)); 
   return(total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], ci@quantiles$prec['q75'], ">") * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1342,7 +1350,7 @@ climdex.r75p <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.r95p <- function(ci, freq=c("monthly", "annual")) { 
+climdex.r95p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec)); 
   return(total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], ci@quantiles$prec['q95'], ">") * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1363,7 +1371,7 @@ climdex.r95p <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.r99p <- function(ci, freq=c("monthly", "annual")) { 
+climdex.r99p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec));
   return(total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], ci@quantiles$prec['q99'], ">") * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1384,7 +1392,7 @@ climdex.r99p <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.r75ptot <- function(ci, freq=c("monthly", "annual")) { 
+climdex.r75ptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   
   stopifnot(!is.null(ci@data$prec),!is.null(ci@quantiles$prec)); 
   prcptot <- total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, ">=") * ci@namasks[[match.arg(freq)]]$prec
@@ -1408,7 +1416,7 @@ climdex.r75ptot <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.r95ptot <- function(ci, freq=c("monthly", "annual")) { 
+climdex.r95ptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   
   stopifnot(!is.null(ci@data$prec),!is.null(ci@quantiles$prec)); 
   prcptot <- total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, ">=") * ci@namasks[[match.arg(freq)]]$prec
@@ -1432,7 +1440,7 @@ climdex.r95ptot <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.r99ptot <- function(ci, freq=c("monthly", "annual")) { 
+climdex.r99ptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   
   stopifnot(!is.null(ci@data$prec),!is.null(ci@quantiles$prec)); 
   prcptot <- total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, ">=") * ci@namasks[[match.arg(freq)]]$prec
@@ -1455,7 +1463,7 @@ climdex.r99ptot <- function(ci, freq=c("monthly", "annual")) {
 #' @template get_generic_example
 #' 
 #' @export
-climdex.prcptot <- function(ci, freq=c("monthly", "annual")) { 
+climdex.prcptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec)); 
   return(total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, ">=") * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -1568,7 +1576,7 @@ climdex.spi6 <- function(ci, freq=c("monthly"), scale=6, distribution="Gamma", f
 #' @references \url{http://www.ecad.eu/documents/atbd.pdf}
 #' 
 #' @export
-climdex.csu <- function(ci,freq=c("monthly","annual"),spells.can.span.years=FALSE) {
+climdex.csu <- function(ci,freq=c("monthly","annual", "halfyear", "seasonal"),spells.can.span.years=FALSE) {
   stopifnot(!is.null(ci@data$tmax));
   return(spell.length.max(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 25, ">", spells.can.span.years) * ci@namasks[[match.arg(freq)]]$tmax)
 }
@@ -1586,7 +1594,7 @@ climdex.csu <- function(ci,freq=c("monthly","annual"),spells.can.span.years=FALS
 #' @references \url{http://www.ecad.eu/indicesextremes/indicesdictionary.php}
 #' 
 #' @export
-climdex.cfd <- function(ci,freq=c("monthly","annual"),spells.can.span.years=FALSE) {
+climdex.cfd <- function(ci,freq=c("monthly","annual", "halfyear", "seasonal"),spells.can.span.years=FALSE) {
   stopifnot(!is.null(ci@data$tmin));
   return(spell.length.max(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 0, "<", spells.can.span.years) * ci@namasks[[match.arg(freq)]]$tmin) }
 
@@ -1602,7 +1610,7 @@ climdex.cfd <- function(ci,freq=c("monthly","annual"),spells.can.span.years=FALS
 #' @references \url{http://www.ecad.eu/indicesextremes/indicesdictionary.php}
 #' 
 #' @export
-climdex.hd17 <- function(ci, freq=c("monthly","annual")) {
+climdex.hd17 <- function(ci, freq=c("monthly","annual", "halfyear", "seasonal")) {
   stopifnot(!is.null(ci@data$tavg));
   return(tapply((17 -  ci@data$tavg), ci@date.factors[[match.arg(freq)]], sum)* ci@namasks[[match.arg(freq)]]$tavg)
 }
@@ -1672,7 +1680,7 @@ days.op.threshold <- function(temp, dates, jdays, date.factor, threshold.outside
 #' @template generic_seealso_references
 #'
 #' @export
-climdex.cd <- function(ci, freq=c("annual", "monthly"), precip.thresh="q25", precip.op="<", temp.thresh="q25", temp.op="<") {
+climdex.cd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q25", precip.op="<", temp.thresh="q25", temp.op="<") {
   
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec) && !is.null(ci@data$tavg) && !is.null(ci@quantiles$tavg))
   daily.prec <- ci@data$prec
@@ -1703,7 +1711,7 @@ climdex.cd <- function(ci, freq=c("annual", "monthly"), precip.thresh="q25", pre
 #' @template generic_seealso_references
 #'
 #' @export
-climdex.cw <- function(ci, freq=c("annual", "monthly", "halfyear", "seasonal"), precip.thresh="q75", precip.op=">", temp.thresh="q25", temp.op="<") {
+climdex.cw <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q75", precip.op=">", temp.thresh="q25", temp.op="<") {
   
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec) && !is.null(ci@data$tavg) && !is.null(ci@quantiles$tavg))
   daily.prec <- ci@data$prec
@@ -1734,7 +1742,7 @@ climdex.cw <- function(ci, freq=c("annual", "monthly", "halfyear", "seasonal"), 
 #' @template generic_seealso_references
 #'
 #' @export
-climdex.wd <- function(ci, freq=c("annual", "monthly", "halfyear", "seasonal"), precip.thresh="q25", precip.op="<", temp.thresh="q75", temp.op=">") {
+climdex.wd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q25", precip.op="<", temp.thresh="q75", temp.op=">") {
   
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec) && !is.null(ci@data$tavg) && !is.null(ci@quantiles$tavg))
   daily.prec <- ci@data$prec
@@ -1765,7 +1773,7 @@ climdex.wd <- function(ci, freq=c("annual", "monthly", "halfyear", "seasonal"), 
 #' @template generic_seealso_references
 #'
 #' @export
-climdex.ww <- function(ci, freq=c("annual", "monthly", "halfyear", "seasonal"), precip.thresh="q75", precip.op=">", temp.thresh="q75", temp.op=">") {
+climdex.ww <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q75", precip.op=">", temp.thresh="q75", temp.op=">") {
   
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec) && !is.null(ci@data$tavg) && !is.null(ci@quantiles$tavg))
   daily.prec <- ci@data$prec

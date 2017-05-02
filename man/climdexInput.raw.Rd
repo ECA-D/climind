@@ -4,28 +4,24 @@
 \alias{climdexInput.raw}
 \title{Method for creating climdexInput object from vectors of data}
 \usage{
-climdexInput.raw(tmax = NULL, tmax.dates = NULL, tmin = NULL,
-  tmin.dates = NULL, tavg = NULL, tavg.dates = NULL, prec = NULL,
-  prec.dates = NULL, base.range = c(1961, 1990), n = 5,
-  northern.hemisphere = TRUE, quantiles = NULL, temp.qtiles = c(0.1, 0.9),
-  prec.qtiles = c(0.75, 0.95, 0.99), max.missing.days = c(annual = 15,
+climdexInput.raw(tmax = NULL, tmin = NULL, prec = NULL,
+  tmax.dates = NULL, tmin.dates = NULL, prec.dates = NULL,
+  base.range = c(1961, 1990), n = 5, northern.hemisphere = TRUE,
+  tavg = NULL, tavg.dates = NULL, quantiles = NULL, temp.qtiles = c(0.1,
+  0.9), prec.qtiles = c(0.75, 0.95, 0.99), max.missing.days = c(annual = 15,
   halfyear = 10, seasonal = 8, monthly = 3),
   min.base.data.fraction.present = 0.1)
 }
 \arguments{
 \item{tmax}{Daily maximum temperature data.}
 
-\item{tmax.dates}{Dates for the daily maximum temperature data.}
-
 \item{tmin}{Daily minimum temperature data.}
 
-\item{tmin.dates}{Dates for the daily minimum temperature data.}
-
-\item{tavg}{Daily mean temperature data.}
-
-\item{tavg.dates}{Dates for the daily mean temperature data.}
-
 \item{prec}{Daily total precipitation data.}
+
+\item{tmax.dates}{Dates for the daily maximum temperature data.}
+
+\item{tmin.dates}{Dates for the daily minimum temperature data.}
 
 \item{prec.dates}{Dates for the daily total precipitation data.}
 
@@ -34,6 +30,10 @@ climdexInput.raw(tmax = NULL, tmax.dates = NULL, tmin = NULL,
 \item{n}{Number of days to use as window for daily quantiles.}
 
 \item{northern.hemisphere}{Whether this point is in the northern hemisphere.}
+
+\item{tavg}{Daily mean temperature data.}
+
+\item{tavg.dates}{Dates for the daily mean temperature data.}
 
 \item{quantiles}{Threshold quantiles for supplied variables.}
 

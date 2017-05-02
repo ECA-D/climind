@@ -10,7 +10,8 @@ climdexInput.csv(tmax.file = NULL, tmin.file = NULL, prec.file = NULL,
   date.types = NULL, n = 5, northern.hemisphere = TRUE,
   tavg.file = NULL, quantiles = NULL, temp.qtiles = c(0.1, 0.9),
   prec.qtiles = c(0.75, 0.95, 0.99), max.missing.days = c(annual = 15,
-  monthly = 3), min.base.data.fraction.present = 0.1)
+  halfyear = 10, seasonal = 8, monthly = 3),
+  min.base.data.fraction.present = 0.1)
 }
 \arguments{
 \item{tmax.file}{Name of file containing daily maximum temperature data.}
