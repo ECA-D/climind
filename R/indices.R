@@ -556,8 +556,8 @@ climdex.cdd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"),
 #' Wet spells are considered to be sequences of days where daily precipitation
 #' is at least 1mm per day.
 #' 
-#' @template cdd_common
-#' @templateVar cdxvar cdd
+#' @template cwd_common
+#' @templateVar cdxvar cwd
 #' @templateVar cdxdescription an annual timeseries of the CWD index.
 #' @template get_generic_example
 #' 
@@ -744,7 +744,9 @@ climdex.prcptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasona
 #' @importFrom stats ts
 #' 
 #' @export
-climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", fit="ub-pwm", kernal=list(type="rectangular",shift=1), ref.start=NULL, ref.end=NULL){
+climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", 
+                         fit="ub-pwm", kernal=list(type="rectangular",shift=1), 
+                         ref.start=NULL, ref.end=NULL){
   
   spiprec <- ci@data$prec
   spifactor <- ci@date.factors$monthly
@@ -772,7 +774,8 @@ climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", f
 
 #' Standardized Precipitation Index 6-mon
 #' @description Adapted by ClimPACT2 and SPEI (arguments taken from here) libraries.
-#' Given a timeseries of daily precipitation amounts [mm], the function calculates the Standardized Precipitation Index (SPI) as it is created and defined by the SPEI library.
+#' Given a timeseries of daily precipitation amounts [mm], the function calculates 
+#' the Standardized Precipitation Index (SPI) as it is created and defined by the SPEI library.
 #' This function computes the climdex index spi at multiple scales.
 #' 
 #' @param ci Object of type climdexInput (representing the daily precipitation [mm])
@@ -792,7 +795,9 @@ climdex.spi3 <- function(ci, freq=c("monthly"), scale=3, distribution="Gamma", f
 #' @importFrom stats ts
 #' 
 #' @export
-climdex.spi6 <- function(ci, freq=c("monthly"), scale=6, distribution="Gamma", fit="ub-pwm", kernal=list(type="rectangular",shift=1), ref.start=NULL, ref.end=NULL){
+climdex.spi6 <- function(ci, freq=c("monthly"), scale=6, distribution="Gamma", 
+                         fit="ub-pwm", kernal=list(type="rectangular",shift=1), 
+                         ref.start=NULL, ref.end=NULL){
   
   spiprec <- ci@data$prec
   spifactor <- ci@date.factors$monthly
