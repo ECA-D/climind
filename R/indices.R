@@ -1113,3 +1113,94 @@ climdex.HI <- function(ci,freq=c("annual"),cur_sub){
   
   return(tapply(dat_final,valid.sel,sum))
 }
+
+
+#' Flexible GSL function
+#' 
+#' This function computes the growing season length (GSL) given the input,
+#' which is allowed to vary considerably from the ETCCDI definitions.
+#' 
+#' This function is the function used to implement \code{\link{climdex.gsl}}.
+#' It's designed to be flexible to allow for experimentation and testing of new
+#' thresholds and methods.
+#' 
+#' If you need to use this code for experimentation in the southern hemisphere,
+#' you'll need to rip off the climdex.gsl code to rotate the year around so
+#' that July 1st is treated as January 1st.
+#' 
+#' See \code{\link{climdex.gsl}} for more information on what \code{gsl.mode}
+#' does.
+#' 
+#' @param daily.mean.temp Timeseries of daily mean temperature (in degrees C),
+#' padded out to end on a year boundary (ie: starts on January 1st of some
+#' year, ends on December 31st).
+#' @param date.factor Factor of the same length as daily.mean.temp that divides
+#' the timeseries up into years of data.
+#' @param dates The corresponding series of dates.
+#' @param northern.hemisphere Whether the data is from the northern hemisphere.
+#' @param min.length The minimum number of days above or below the threshold
+#' temperature that defines the start or end of a growing season.
+#' @param t.thresh The temperature threshold for being considered part of a
+#' growing season (in degrees C).
+#' @param gsl.mode The growing season length mode (ETCCDI mode is "GSL").
+#' @return A vector containing the number of days in the growing season for
+#' each year.
+#' @seealso \code{\link{climdex.gsl}}, \code{\link{climdexInput.csv}}.
+#' @keywords ts climate
+#' @examples
+#' library(PCICt)
+#' 
+#' ## Create a climdexInput object from some data already loaded in and
+#' ## ready to go.
+#' 
+#' ## Parse the dates into PCICt.
+#' tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
+#' "jday")]), format="%Y %j", cal="gregorian")
+#' tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
+#' "jday")]), format="%Y %j", cal="gregorian")
+#' prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
+#' "jday")]), format="%Y %j", cal="gregorian")
+#' 
+#' ## Load the data in.
+#' ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
+#' ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
+#' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
+#' 
+#' ## Create an annual timeseries of the growing season length in days.
+#' gsl <- growing.season.length(ci@@data$tavg, ci@@date.factors$annual, ci@@dates,
+#'                              ci@@northern.hemisphere, gsl.mode="GSL") * 
+#'        ci@@namasks$annual$tavg
+#' 
+#' ## Print these out for testing purposes.
+#' gsl
+#' 
+#' @export
+growing.season.length <- function(daily.mean.temp, date.factor, dates, northern.hemisphere,
+                                  min.length=6, t.thresh=5, gsl.mode=c("GSL", "GSL_first", "GSL_max", "GSL_sum")) {
+  gsl.mode <- match.arg(gsl.mode)
+  month.series <- get.months(dates)
+  transition.month <- if(northern.hemisphere) 7 else 1
+  if(gsl.mode == "GSL") {
+    return(tapply.fast(1:length(daily.mean.temp), date.factor, function(idx) {
+      temp.data <- daily.mean.temp[idx]
+      ts.mid <- head(which(month.series[idx] == transition.month), n = 1)
+      if(!length(ts.mid))
+        return(NA)
+      
+      ts.len<- length(temp.data)
+      gs.begin <- which(select.blocks.gt.length(temp.data[1:(ts.mid-1)] > t.thresh, min.length - 1))
+      
+      ## Growing season actually ends the day -before- the sequence of sketchy days
+      gs.end <- which(select.blocks.gt.length(temp.data[ts.mid:ts.len] < t.thresh, min.length - 1)) - 1
+      
+      ## If no growing season start, 0 length; if no end, ends at end of year; otherwise, end - start + 1
+      return(ifelse(length(gs.begin) == 0, 0, ifelse(length(gs.end) == 0, ts.len - gs.begin[1] + 1, gs.end[1] - gs.begin[1] + ts.mid)))
+    }))
+  } else {
+    in.gsl <- !select.blocks.gt.length(!select.blocks.gt.length(daily.mean.temp >= t.thresh, min.length - 1), min.length - 1)
+    warning("GSL_first, GSL_max, and GSL_sum are experimental alternative growing season length definitions. Use at your own risk.")
+    
+    innerfunc <- switch(gsl.mode, GSL_first=function(bl) { ifelse(any(bl > 0), (bl[bl > 0])[1], 0) }, GSL_max=max, GSL_sum=sum)
+    return(tapply.fast(in.gsl, date.factor, function(ts) { block.lengths <- get.series.lengths.at.ends(ts); return(innerfunc(block.lengths)); }))
+  }
+}

@@ -167,40 +167,6 @@ create.filled.series <- function(data, data.dates, new.date.sequence) {
   return(new.data)
 }
 
-
-## Get set of days for bootstrap use
-get.bootstrap.set <- function(dates, bootstrap.range, win.size) {
-  dpy <- ifelse(is.null(attr(dates, "dpy")), 365, attr(dates, "dpy"))
-  return(dates >= bootstrap.range[1] & dates <= bootstrap.range[2] & (dpy == 360 | format(dates, format="%m-%d", tz="GMT") != "02-29"))
-}
-
-## Calculate a running quantile on the data set over the bootstrap range.
-## If get.bootstrap.data is TRUE, use the Zhang boostrapping method described in Xuebin Zhang et al's 2005 paper, "Avoiding Inhomogeneity in Percentile-Based Indices of Temperature Extremes" J.Clim vol 18 pp.1647-1648, "Removing the 'jump'".
-## Expects PCICt for all dates
-zhang.running.qtile <- function(x, dates.base, qtiles, bootstrap.range, include.mask=NULL, n=5, get.bootstrap.data=FALSE, min.fraction.present=0.1) {
-  inset <- get.bootstrap.set(dates.base, bootstrap.range, n)
-  dpy <- ifelse(is.null(attr(dates.base, "dpy")), 365, attr(dates.base, "dpy"))
-  nyears <- floor(sum(inset) / dpy)
-  
-  if(!is.null(include.mask))
-    x[include.mask] <- NA
-
-  bs.data <- x[inset]
-
-  qdat <- NULL
-  if(get.bootstrap.data) {
-    d <- .Call("running_quantile_windowed_bootstrap", bs.data, n, qtiles, dpy, min.fraction.present, PACKAGE='climind')
-    dim(d) <- c(dpy, nyears, nyears - 1, length(qtiles))
-    qdat <- lapply(1:length(qtiles), function(x) { r <- d[,,,x, drop=FALSE]; dim(r) <- dim(r)[1:3]; r })
-  } else {
-    res <- running.quantile(bs.data, n, qtiles, dpy, min.fraction.present)
-    qdat <- lapply(1:length(qtiles), function(x) { res[,x] })
-  }
-  names(qdat) <- paste("q", qtiles * 100, sep="")
-  return(qdat)
-}
-
-
 ## Check that arguments to climdexInput.raw et al are complete enough and valid enough.
 check.basic.argument.validity <- function(tmax, tmin, prec, 
                                           tmax.dates, tmin.dates, prec.dates, 
@@ -255,110 +221,6 @@ check.quantile.validity <- function(quantiles, present.vars, days.in.base) {
 
   if("prec" %in% names(quantiles) && !all(c("q95", "q99") %in% names(quantiles$prec)))
     stop("Precipitation quantiles must contain 95th and 99th percentiles.\n")
-}
-
-get.temp.var.quantiles <- function(filled.data, date.series, bs.date.series, qtiles, bs.date.range, n, in.base=FALSE, min.base.data.fraction.present=0.1) {
-  base.data <- create.filled.series(filled.data, date.series, bs.date.series)
-  if(in.base)
-    return(list(outbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, min.fraction.present=min.base.data.fraction.present),
-                inbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, get.bootstrap.data=TRUE, min.fraction.present=min.base.data.fraction.present)))
-  else
-    return(list(outbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, min.fraction.present=min.base.data.fraction.present)))
-}
-
-get.prec.var.quantiles <- function(filled.prec, date.series, bs.date.range, qtiles=c(0.95, 0.99)) {
-  wet.days <- !(is.na(filled.prec) | filled.prec < 1)
-  inset <- date.series >= bs.date.range[1] & date.series <= bs.date.range[2] & !is.na(filled.prec) & wet.days
-  pq <- quantile(filled.prec[inset], qtiles, type=8)
-  names(pq) <- paste("q", qtiles * 100, sep="")
-  return(pq)
-}
-
-#' Method for getting threshold quantiles for use in computing indices
-#' 
-#' This function creates threshold quantiles for use with climdexInput.raw
-#' or climdexInput.csv.
-#' 
-#' This function takes input climate data at daily resolution, and produces as
-#' output a set of threshold quantiles. This data structure can then be passed
-#' to climdexInput.raw or climdexInput.csv.
-#'
-#' For more details on arguments, see \code{link{climdexInput.raw}}.
-#'
-#' @seealso \code{\link{climdex.pcic-package}}, \code{\link{climdexInput.raw}}.
-#' @references \url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
-#' @keywords ts climate
-#'
-#' @param tmax Daily maximum temperature data.
-#' @param tmin Daily minimum temperature data.
-#' @param prec Daily total precipitation data.
-#' @param tmax.dates Dates for the daily maximum temperature data.
-#' @param tmin.dates Dates for the daily minimum temperature data.
-#' @param prec.dates Dates for the daily total precipitation data.
-#' @template climdexInput_common_params
-#' @param quantiles Threshold quantiles for supplied variables.
-#' @return A set of threshold quantiles
-#' @note Units are assumed to be mm/day for precipitation and degrees Celsius
-#' for temperature. No units conversion is performed internally.
-#' 
-#' @examples
-#' library(PCICt)
-#' 
-#' ## Create a climdexInput object from some data already loaded in and
-#' ## ready to go.
-#' 
-#' ## Parse the dates into PCICt.
-#' tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' 
-#' ## Load the data in.
-#' quantiles <- get.outofbase.quantiles(ec.1018935.tmax$MAX_TEMP,
-#' ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
-#' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
-#'
-#' @export
-get.outofbase.quantiles <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, tmin.dates=NULL, prec.dates=NULL, 
-                                    base.range=c(1961, 1990), n=5, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), min.base.data.fraction.present=0.1) {
-  days.threshold <- 359
-  check.basic.argument.validity(tmax, tmin, prec, tmax.dates, tmin.dates, prec.dates, base.range, n)
-  
-  d.list <- list(tmin.dates, tmax.dates, prec.dates)
-  all.dates <- do.call(c, d.list[!sapply(d.list, is.null)])
-  last.day.of.year <- get.last.monthday.of.year(all.dates)
-  cal <- attr(all.dates, "cal")
-
-  bs.date.range <- as.PCICt(paste(base.range, c("01-01", last.day.of.year), sep="-"), cal=cal)
-  new.date.range <- as.PCICt(paste(as.numeric(format(range(all.dates), "%Y", tz="GMT")), c("01-01", last.day.of.year), sep="-"), cal=cal)
-  date.series <- seq(new.date.range[1], new.date.range[2], by="day")
-  bs.date.series <- seq(bs.date.range[1], bs.date.range[2], by="day")
-  
-  quantiles <- list()
-
-  if(!is.null(tmax)) {
-    if(get.num.days.in.range(tmax.dates, bs.date.range) <= days.threshold)
-      stop("There is less than a year of tmax data within the base period. Consider revising your base range and/or check your input data.")
-    filled.tmax <- create.filled.series(tmax, trunc(tmax.dates, "days"), date.series)
-    quantiles$tmax <- get.temp.var.quantiles(filled.tmax, date.series, bs.date.series, temp.qtiles, bs.date.range, n)
-  } 
-
-  if(!is.null(tmin)) {
-    if(get.num.days.in.range(tmin.dates, bs.date.range) <= days.threshold)
-      stop("There is less than a year of tmin data within the base period. Consider revising your base range and/or check your input data.")
-    filled.tmin <- create.filled.series(tmin, trunc(tmin.dates, "days"), date.series)
-    quantiles$tmin <- get.temp.var.quantiles(filled.tmin, date.series, bs.date.series, temp.qtiles, bs.date.range, n)
-  }
-
-  if(!is.null(prec)) {
-    if(get.num.days.in.range(prec.dates, bs.date.range) <= days.threshold)
-      stop("There is less than a year of prec data within the base period. Consider revising your base range and/or check your input data.")
-    filled.prec <- create.filled.series(prec, trunc(prec.dates, "days"), date.series)
-    quantiles$prec <- get.prec.var.quantiles(filled.prec, date.series, bs.date.range, prec.qtiles)
-  }
-  return(quantiles)
 }
 
 #' Method for creating climdexInput object from vectors of data
@@ -630,12 +492,13 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL,
 #'
 #' @export
 climdexInput.csv <- function(tmax.file=NULL, tmin.file=NULL, prec.file=NULL,
-                             data.columns=list(tmin="tmin", tmax="tmax", prec="prec"), 
-                             base.range=c(1961, 1990),
+                             data.columns=list(tmin="tmin", tmax="tmax", 
+                             prec="prec"), base.range=c(1961, 1990),
                              na.strings=NULL, cal="gregorian", date.types=NULL, 
                              n=5, northern.hemisphere=TRUE,
                              tavg.file=NULL, 
-                             quantiles=NULL, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), 
+                             quantiles=NULL, temp.qtiles=c(0.10, 0.90), 
+                             prec.qtiles=c(0.75, 0.95, 0.99), 
                              max.missing.days=c(annual=15, halfyear=10, seasonal=8, monthly=3),
                              min.base.data.fraction.present=0.1) {
   
@@ -652,7 +515,8 @@ climdexInput.csv <- function(tmax.file=NULL, tmin.file=NULL, prec.file=NULL,
     date.types <- list(list(fields=c("year", "jday"), format="%Y %j"),
                        list(fields=c("year", "month", "day"), format="%Y %m %d"))
   else
-    if(any(!sapply(date.types, function(x) { return(sum(c("fields", "format") %in% names(x)) == 2 && is.character(x$fields) && is.character(x$format)) } )))
+    if(any(!sapply(date.types, function(x) { 
+      return(sum(c("fields", "format") %in% names(x)) == 2 && is.character(x$fields) && is.character(x$format)) } )))
       stop("Invalid date.types specified. See ?climdexInput.csv .")
 
   tmin <- get.and.check.data(tmin.file, data.columns$tmin)
@@ -667,47 +531,6 @@ climdexInput.csv <- function(tmax.file=NULL, tmin.file=NULL, prec.file=NULL,
                           quantiles=quantiles, temp.qtiles=temp.qtiles, prec.qtiles=prec.qtiles, 
                           max.missing.days=max.missing.days, 
                           min.base.data.fraction.present=min.base.data.fraction.present))
-}
-
-####################################################################33
-## Functions for eca\&d station files
-## -- introduced by C. Photiadou (KNMI), November 2015
-# Secondary function for eca.input
-# 
-# Typical ECA\&D files contain a header and this functions finds the line number where the data starts.
-#
-find.start.of.data.index = function(fname) {
-  matched.indices = which(grepl('^SOUID', gsub(" ", "", readLines(fname, n = 50))))
-  if (length(matched.indices) > 1) stop('ECA fileformat error: cannot determine start of data, multiple header lines')
-  if (length(matched.indices) == 0) stop('ECA fileformat error: cannot find start of data: cannot find header line')
-  return(matched.indices - 1)
-}
-
-## Functions for eca\&d station files
-#' ECA &D station data files 
-#' 
-#' This function reads and prepares the station data files from the European Climate Assessment and Dataset (ECA&D) for use in climdex
-#' 
-#' @param filename File name and path of station data file.
-#' @param var.name A varialbe name from the ECA\&D variavle list: prec (RR), tavg (TG), tmax (TX), tmin(TN), sun (SS),
-#'        wind_gust (FX), wind (FG).
-#' @param data.name Always DATE
-#' @return A data frame containing two columns: DATE with dates in PCICt format and "var.name" the varialbe name.
-#' @template get_generic_example
-#' @author Christiana Photiadou (KNMI)
-#' @references \url{http://www.ecad.eu/}
-#' @export
-eca.input <- function(filename, var.name, date.name){
-  
-  ifile.eca <- read.table(filename, skip=find.start.of.data.index(filename), sep=",", header=T)[,c(date.name,var.name)] 
-  ifile.eca[[date.name]] <- as.PCICt(strptime(as.character(ifile.eca[[date.name]]),"%Y%m%d"), cal="gregorian")
-  ifile.eca[[var.name]][ifile.eca[[var.name]]==-9999]<- NA
-  if(!(var.name %in% c("TG", "TX" ,"TN", "RR", "SS", "FX", "FG"))){
-    return(ifile.eca)
-  } else
-    ifile.eca[[var.name]] <- ifile.eca[[var.name]]*0.1
-  
-  return(ifile.eca)
 }
 
 #' Get available indices by name
@@ -755,266 +578,6 @@ climdex.get.available.indices <- function(ci, function.names=TRUE) {
   } else {
     return(unlist(available.indices[names(ci@data)], use.names=FALSE))
   }
-}
-
-##
-## HELPERS FINISHED. IMPLEMENTATION BELOW.
-##
-
-#' Get series length at ends
-#' 
-#' This function takes a series of boolean values and returns a list of
-#' integers of the same length corresponding to the lengths at the ends of
-#' sequences of TRUE values.
-#' 
-#' It can often be useful to know how long a series of boolean values is. This
-#' function provides a method of knowing where and how long such sequences are.
-#' 
-#' @param x Sequence of booleans.
-#' @param na.value Value to replace NAs with.
-#' @return A vector consisting of the lengths of sequences of TRUE values at
-#' the location of the last TRUE value in the sequence, and zeroes elsewhere.
-#' @keywords ts climate
-#' @examples
-#' 
-#' ## Get lengths of sequences of TRUE values in a sequence
-#' series.lengths <- get.series.lengths.at.ends(c(TRUE, TRUE, TRUE, FALSE,
-#' TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE))
-#' 
-#' 
-#' @export
-get.series.lengths.at.ends <- function(x, na.value=FALSE) {
-  stopifnot(is.logical(x) && is.logical(na.value))
-  n <- length(x)
-  if(n == 1)
-    return(as.numeric(x))
-
-  res <- rep(0, n)
-  x[is.na(x)] <- na.value
-
-  ## Compare series to lag-1 and lag+1 series; false added to trigger state transition from TRUE at ends of series
-  start <- which(x & !(c(FALSE, x[1:(n - 1)])))
-  end <- which(x & !(c(x[2:n], FALSE)))
-  res[end] <- end - start + 1
-  return(res)
-}
-
-#' Number of days (less than, greater than, etc) a threshold
-#' 
-#' Produces sums of values that exceed (or are below) the specified threshold.
-#' 
-#' This function takes a data series, a threshold, an operator, and a factor to
-#' aggregate by. It uses the operator to compare the threshold to the data
-#' series, creating a series of booleans, then sums the booleans according to
-#' the factor.
-#' 
-#' @param temp Sequence temperature values.
-#' @param date.factor Factor to aggregate by.
-#' @param threshold Threshold to use.
-#' @param op Operator to use for comparison.
-#' @return A vector consisting of the number of values that meet the criteria
-#' in the given time period (as specified by \code{date.factor}).
-#' @keywords ts climate
-#' @examples
-#' library(PCICt)
-#'
-#' ## Parse the dates into PCICt.
-#' tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' 
-#' ## Load the data in.
-#' ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
-#' ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
-#' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
-#' 
-#' ## Calculate frost days.
-#' fd <- number.days.op.threshold(ci@@data$tmin,
-#'                                ci@@date.factors$annual, 0, "<")
-#' 
-#' @export
-number.days.op.threshold <- function(temp, date.factor, threshold, op="<") {
-  stopifnot(is.numeric(temp) && is.numeric(threshold) && is.factor(date.factor))
-  return(tapply.fast(match.fun(op)(temp, threshold), date.factor, sum, na.rm=TRUE))
-}
-
-#' Flexible GSL function
-#' 
-#' This function computes the growing season length (GSL) given the input,
-#' which is allowed to vary considerably from the ETCCDI definitions.
-#' 
-#' This function is the function used to implement \code{\link{climdex.gsl}}.
-#' It's designed to be flexible to allow for experimentation and testing of new
-#' thresholds and methods.
-#' 
-#' If you need to use this code for experimentation in the southern hemisphere,
-#' you'll need to rip off the climdex.gsl code to rotate the year around so
-#' that July 1st is treated as January 1st.
-#' 
-#' See \code{\link{climdex.gsl}} for more information on what \code{gsl.mode}
-#' does.
-#' 
-#' @param daily.mean.temp Timeseries of daily mean temperature (in degrees C),
-#' padded out to end on a year boundary (ie: starts on January 1st of some
-#' year, ends on December 31st).
-#' @param date.factor Factor of the same length as daily.mean.temp that divides
-#' the timeseries up into years of data.
-#' @param dates The corresponding series of dates.
-#' @param northern.hemisphere Whether the data is from the northern hemisphere.
-#' @param min.length The minimum number of days above or below the threshold
-#' temperature that defines the start or end of a growing season.
-#' @param t.thresh The temperature threshold for being considered part of a
-#' growing season (in degrees C).
-#' @param gsl.mode The growing season length mode (ETCCDI mode is "GSL").
-#' @return A vector containing the number of days in the growing season for
-#' each year.
-#' @seealso \code{\link{climdex.gsl}}, \code{\link{climdexInput.csv}}.
-#' @keywords ts climate
-#' @examples
-#' library(PCICt)
-#' 
-#' ## Create a climdexInput object from some data already loaded in and
-#' ## ready to go.
-#' 
-#' ## Parse the dates into PCICt.
-#' tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' 
-#' ## Load the data in.
-#' ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
-#' ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
-#' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
-#' 
-#' ## Create an annual timeseries of the growing season length in days.
-#' gsl <- growing.season.length(ci@@data$tavg, ci@@date.factors$annual, ci@@dates,
-#'                              ci@@northern.hemisphere, gsl.mode="GSL") * 
-#'        ci@@namasks$annual$tavg
-#' 
-#' ## Print these out for testing purposes.
-#' gsl
-#' 
-#' @export
-growing.season.length <- function(daily.mean.temp, date.factor, dates, northern.hemisphere,
-                                  min.length=6, t.thresh=5, gsl.mode=c("GSL", "GSL_first", "GSL_max", "GSL_sum")) {
-  gsl.mode <- match.arg(gsl.mode)
-  month.series <- get.months(dates)
-  transition.month <- if(northern.hemisphere) 7 else 1
-  if(gsl.mode == "GSL") {
-    return(tapply.fast(1:length(daily.mean.temp), date.factor, function(idx) {
-      temp.data <- daily.mean.temp[idx]
-      ts.mid <- head(which(month.series[idx] == transition.month), n = 1)
-      if(!length(ts.mid))
-        return(NA)
-      
-      ts.len<- length(temp.data)
-      gs.begin <- which(select.blocks.gt.length(temp.data[1:(ts.mid-1)] > t.thresh, min.length - 1))
-      
-      ## Growing season actually ends the day -before- the sequence of sketchy days
-      gs.end <- which(select.blocks.gt.length(temp.data[ts.mid:ts.len] < t.thresh, min.length - 1)) - 1
-
-      ## If no growing season start, 0 length; if no end, ends at end of year; otherwise, end - start + 1
-      return(ifelse(length(gs.begin) == 0, 0, ifelse(length(gs.end) == 0, ts.len - gs.begin[1] + 1, gs.end[1] - gs.begin[1] + ts.mid)))
-    }))
-  } else {
-    in.gsl <- !select.blocks.gt.length(!select.blocks.gt.length(daily.mean.temp >= t.thresh, min.length - 1), min.length - 1)
-    warning("GSL_first, GSL_max, and GSL_sum are experimental alternative growing season length definitions. Use at your own risk.")
-    
-    innerfunc <- switch(gsl.mode, GSL_first=function(bl) { ifelse(any(bl > 0), (bl[bl > 0])[1], 0) }, GSL_max=max, GSL_sum=sum)
-    return(tapply.fast(in.gsl, date.factor, function(ts) { block.lengths <- get.series.lengths.at.ends(ts); return(innerfunc(block.lengths)); }))
-  }
-}
-
-#' Lengths of strings of TRUE values
-#' 
-#' Computes fraction of days above or below the baseline threshold for each
-#' day, and averages them using the date factor passed in.
-#' 
-#' This function computes fractions of days above or below baseline thresholds
-#' for each day, then aggregates them using \code{date.factor}. It is used to
-#' implement TN/TX 10/90p.
-#' 
-#' @param temp Sequence of temperature values.
-#' @param dates Sequence of associated dates.
-#' @param jdays Sequence of associated days of year.
-#' @param date.factor Factor to aggregate data using.
-#' @param threshold.outside.base Sequence of thresholds to be used for data
-#' outside the base period.
-#' @param base.thresholds Data structure containing sets of thresholds to be
-#' used inside the base period; see \link{climdexInput-class}.
-#' @param base.range Date range (type PCICt) of the baseline period.
-#' @param op Comparison operator to use.
-#' @param max.missing.days Maximum number of NA values per time period.
-#' @return A vector consisting of the mean fraction of days above or below the
-#' supplied set of thresholds.
-#' @note If date.factor is omitted, daily series will be returned.
-#' @seealso \link{climdexInput-class}.
-#' @keywords ts climate
-#' @examples
-#' library(PCICt)
-#' 
-#' ## Parse the dates into PCICt.
-#' tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
-#' "jday")]), format="%Y %j", cal="gregorian")
-#' 
-#' ## Load the data in.
-#' ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
-#' ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
-#' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
-#' 
-#' ## Compute monthly tx90p.
-#' tx90p <- percent.days.op.threshold(ci@@data$tmax, ci@@dates, ci@@jdays,
-#'                                    ci@@date.factors$monthly,
-#'                                    ci@@quantiles$tmax$outbase$q90,
-#'                                    ci@@quantiles$tmax$inbase$q90,
-#'                                    ci@@base.range, ">",
-#'                                    ci@@max.missing.days['monthly']) *
-#'          ci@@namasks$monthly$tmax
-#' 
-#' @export
-percent.days.op.threshold <- function(temp, dates, jdays, date.factor, threshold.outside.base, base.thresholds, base.range, op='<', max.missing.days) {
-  f <- match.fun(op)
-  dat <- f(temp, threshold.outside.base[jdays])
-  
-  inset <- dates >= base.range[1] & dates <= base.range[2]
-  ## Don't use in-base thresholds with data shorter than two years; no years to replace with.
-  if(sum(inset) > 0 && length(dates) >= 360 * 2) {
-    jdays.base <- jdays[inset]
-    years.base <- get.years(dates[inset])
-
-    ## Get number of base years, subset temp data to base period only.
-    temp.base <- temp[inset]
-    years.base.range <- range(years.base)
-    byrs <- (years.base.range[2] - years.base.range[1] + 1)
-
-    ## Linearize thresholds, then compare them to the temperatures
-    bdim <- dim(base.thresholds)
-    dim(base.thresholds) <- c(bdim[1] * bdim[2], bdim[3])
-    yday.byr.indices <- jdays.base + (years.base - get.years(base.range)[1]) * bdim[1]
-    f.result <- f(rep(temp.base, byrs - 1), base.thresholds[yday.byr.indices,])
-    dim(f.result) <- c(length(yday.byr.indices), bdim[3])
-
-    ## Chop up data along the 2nd dim into a list; sum elements of the list
-    dat[inset] <- rowSums(f.result, na.rm=TRUE) / (byrs - 1)
-  }
-  dat[is.nan(dat)] <- NA
-  if(missing(date.factor))
-    return(dat)
-  na.mask <- get.na.mask(dat, date.factor, max.missing.days)
-  ## FIXME: Need to monthly-ize the NA mask calculation, which will be ugly.
-  ret <- tapply.fast(dat, date.factor, mean, na.rm=TRUE) * 100 * na.mask
-  ret[is.nan(ret)] <- NA
-  return(ret)
 }
 
 #' Sum of spell lengths exceeding daily threshold
@@ -1282,27 +845,3 @@ select.blocks.gt.length <- function(d, n, na.value=FALSE) {
   d2 <- Reduce(function(x, y) { return(c(rep(FALSE, y), d[1:(length(d) - y)]) & x) }, 1:n, d)
   return(Reduce(function(x, y) { return(c(d2[(y + 1):length(d2)], rep(FALSE, y)) | x) }, 1:n, d2))
 }
-
-#' Climdex quantile function
-#' 
-#' This function implements R's type=8 in a more efficient manner.
-#' 
-#' This is a reimplementation of R's type=8 created to improve the efficiency
-#' of this package.
-#' 
-#' @param x Data to compute quantiles on.
-#' @param q Quantiles to be computed.
-#' @return A vector of the quantiles in question.
-#' @seealso \code{\link{quantile}}
-#' @keywords ts climate
-#' @examples
-#' 
-#' ## Compute 10th, 50th, and 90th percentile of example data.
-#' climdex.quantile(1:10, c(0.1, 0.5, 0.9))
-#' 
-#' @export
-climdex.quantile <- function(x, q=c(0, 0.25, 0.5, 0.75, 1)) {
-  return(.Call("c_quantile2", as.double(x), q, PACKAGE='climind'))
-}
-
-
