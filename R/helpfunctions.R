@@ -94,21 +94,3 @@ get.na.mask <- function(x, f, threshold) {
 get.num.days.in.range <- function(x, date.range) {
   return(sum(x >= date.range[1] & x <= date.range[2]))  
 }
-
-get.temp.var.quantiles <- function(filled.data, date.series, bs.date.series, qtiles, bs.date.range, n, in.base=FALSE, min.base.data.fraction.present=0.1) {
-  base.data <- create.filled.series(filled.data, date.series, bs.date.series)
-  if(in.base)
-    return(list(outbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, min.fraction.present=min.base.data.fraction.present),
-                inbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, get.bootstrap.data=TRUE, min.fraction.present=min.base.data.fraction.present)))
-  else
-    return(list(outbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, min.fraction.present=min.base.data.fraction.present)))
-}
-
-get.prec.var.quantiles <- function(filled.prec, date.series, bs.date.range, qtiles=c(0.95, 0.99)) {
-  wet.days <- !(is.na(filled.prec) | filled.prec < 1)
-  inset <- date.series >= bs.date.range[1] & date.series <= bs.date.range[2] & !is.na(filled.prec) & wet.days
-  pq <- quantile(filled.prec[inset], qtiles, type=8)
-  names(pq) <- paste("q", qtiles * 100, sep="")
-  return(pq)
-}
-
