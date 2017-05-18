@@ -4,7 +4,7 @@
 \alias{climdex.r75p}
 \title{Total Daily Precipitation Exceeding 75\%ile Threshold}
 \usage{
-climdex.r75p(ci, freq = c("monthly", "annual"))
+climdex.r75p(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

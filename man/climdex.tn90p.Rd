@@ -4,7 +4,7 @@
 \alias{climdex.tn90p}
 \title{Percent of Values Above 90th Percentile Daily Minimum Temperature}
 \usage{
-climdex.tn90p(ci, freq = c("monthly", "annual"))
+climdex.tn90p(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

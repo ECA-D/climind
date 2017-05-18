@@ -4,7 +4,8 @@
 \alias{climdex.cwd}
 \title{Maximum Consecutive Wet Days}
 \usage{
-climdex.cwd(ci, freq = c("monthly", "annual"), spells.can.span.years = TRUE)
+climdex.cwd(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
+  spells.can.span.years = TRUE)
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

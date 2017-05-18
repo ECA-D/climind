@@ -4,7 +4,7 @@
 \alias{climdex.r95ptot}
 \title{Precipitation fraction due to very wet days (exceeding 95\%ile Threshold)}
 \usage{
-climdex.r95ptot(ci, freq = c("monthly", "annual"))
+climdex.r95ptot(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

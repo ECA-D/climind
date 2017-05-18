@@ -4,7 +4,7 @@
 \alias{climdex.wsdi}
 \title{Warm Spell Duration Index}
 \usage{
-climdex.wsdi(ci, freq = c("monthly", "annual"),
+climdex.wsdi(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
   spells.can.span.years = FALSE)
 }
 \arguments{

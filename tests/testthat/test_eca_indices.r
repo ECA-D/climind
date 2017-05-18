@@ -66,10 +66,12 @@ test_that("tmax indices annual", {
 
   ## tmax
   ci_csu <- climdex.csu(ci_temp, freq=c("annual"))
+  ci_su <- climdex.su(ci_temp, freq=c("seasonal"))
   #ci_txndaymin <- climdex.txndaymin(ci_temp, freq=c("annual"))
   #ci_txndaymax <- climdex.txndaymin(ci_temp, freq=c("annual"))
 
   expect_equal_to_reference(ci_csu, "regressionOutput/csu_deBilt.rds")
+  expect_equal_to_reference(ci_su, "regressionOutput/su_deBilt.rds")
   #expect_equal_to_reference(ci_txndaymin, "regressionOutput/txndaymin_deBilt.rds")
   #expect_equal_to_reference(ci_txndaymax, "regressionOutput/txndaymax_deBilt.rds")
 })
@@ -82,10 +84,12 @@ test_that("tmin indices annual & monthly", {
   ci_temp <- climdexInput.raw(tmin=tn$TN, tmin.dates = tn$DATE,base.range=c(1961, 1991))
 
   ci_cfd   <- climdex.cfd(ci_temp, freq=c("monthly"))
+  ci_fd    <- climdex.fd(ci_temp, freq=c("halfyear"))
   #ci_tnndaymin <- climdex.tnndaymin(ci_temp, freq=c("monthly"))
   #ci_tnndaymax <- climdex.tnndaymax(ci_temp, freq=c("annual"))
 
   expect_equal_to_reference(ci_cfd, "regressionOutput/cfd_deBilt.rds")
+  expect_equal_to_reference(ci_fd, "regressionOutput/fd_deBilt.rds")
   #expect_equal_to_reference(ci_tnndaymin, "regressionOutput/tnndaymin_deBilt.rds")
   #expect_equal_to_reference(ci_tnndaymax, "regressionOutput/tnndaymax_deBilt.rds")
 })

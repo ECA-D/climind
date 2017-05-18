@@ -4,7 +4,7 @@
 \alias{climdex.rx5day}
 \title{Monthly Maximum 5-day Consecutive Precipitation}
 \usage{
-climdex.rx5day(ci, freq = c("monthly", "annual"),
+climdex.rx5day(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
   center.mean.on.last.day = FALSE)
 }
 \arguments{

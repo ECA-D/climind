@@ -4,7 +4,7 @@
 \alias{climdex.r10mm}
 \title{Precipitation Exceeding 10mm Per Day}
 \usage{
-climdex.r10mm(ci, freq = c("monthly", "annual"))
+climdex.r10mm(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

@@ -4,7 +4,7 @@
 \alias{climdex.su}
 \title{Summer Days}
 \usage{
-climdex.su(ci, freq = c("monthly", "annual"))
+climdex.su(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

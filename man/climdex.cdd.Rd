@@ -4,7 +4,8 @@
 \alias{climdex.cdd}
 \title{Maximum Consecutive Dry Days}
 \usage{
-climdex.cdd(ci, freq = c("monthly", "annual"), spells.can.span.years = TRUE)
+climdex.cdd(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
+  spells.can.span.years = TRUE)
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

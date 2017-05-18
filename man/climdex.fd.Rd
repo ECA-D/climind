@@ -4,7 +4,7 @@
 \alias{climdex.fd}
 \title{Frost Days}
 \usage{
-climdex.fd(ci, freq = c("monthly", "annual"))
+climdex.fd(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

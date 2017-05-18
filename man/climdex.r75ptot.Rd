@@ -4,7 +4,7 @@
 \alias{climdex.r75ptot}
 \title{Precipitation fraction due to moderate wet days (exceeding 75\%ile Threshold)}
 \usage{
-climdex.r75ptot(ci, freq = c("monthly", "annual"))
+climdex.r75ptot(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}
