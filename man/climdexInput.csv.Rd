@@ -8,9 +8,9 @@ climdexInput.csv(tmax.file = NULL, tmin.file = NULL, prec.file = NULL,
   data.columns = list(tmin = "tmin", tmax = "tmax", prec = "prec"),
   base.range = c(1961, 1990), na.strings = NULL, cal = "gregorian",
   date.types = NULL, n = 5, northern.hemisphere = TRUE,
-  tavg.file = NULL, quantiles = NULL, temp.qtiles = c(0.1, 0.9),
-  prec.qtiles = c(0.75, 0.95, 0.99), max.missing.days = c(annual = 15,
-  halfyear = 10, seasonal = 8, monthly = 3),
+  tavg.file = NULL, quantiles = NULL, temp.qtiles = c(0.1, 0.25, 0.75,
+  0.9), prec.qtiles = c(0.25, 0.75, 0.95, 0.99), max.missing.days = c(annual
+  = 15, halfyear = 10, seasonal = 8, monthly = 3),
   min.base.data.fraction.present = 0.1)
 }
 \arguments{
@@ -24,8 +24,7 @@ climdexInput.csv(tmax.file = NULL, tmin.file = NULL, prec.file = NULL,
 
 \item{base.range}{Years to use for the baseline.}
 
-\item{na.strings}{Strings used for NA values; passed to
-\code{\link[utils]{read.csv}}.}
+\item{na.strings}{Strings used for NA values; passed to \link[utils]{read.table}}
 
 \item{cal}{The calendar type used in the input files.}
 

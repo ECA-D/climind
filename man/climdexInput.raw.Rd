@@ -8,8 +8,8 @@ climdexInput.raw(tmax = NULL, tmin = NULL, prec = NULL,
   tmax.dates = NULL, tmin.dates = NULL, prec.dates = NULL,
   base.range = c(1961, 1990), n = 5, northern.hemisphere = TRUE,
   tavg = NULL, tavg.dates = NULL, quantiles = NULL, temp.qtiles = c(0.1,
-  0.9), prec.qtiles = c(0.75, 0.95, 0.99), max.missing.days = c(annual = 15,
-  halfyear = 10, seasonal = 8, monthly = 3),
+  0.25, 0.75, 0.9), prec.qtiles = c(0.25, 0.75, 0.95, 0.99),
+  max.missing.days = c(annual = 15, halfyear = 10, seasonal = 8, monthly = 3),
   min.base.data.fraction.present = 0.1)
 }
 \arguments{

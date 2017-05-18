@@ -32,7 +32,8 @@ A vector containing a monthly SPI at the selected scale
 }
 \description{
 Adapted by ClimPACT2 and SPEI (arguments taken from here) libraries.
-Given a timeseries of daily precipitation amounts [mm], the function calculates the Standardized Precipitation Index (SPI) as it is created and defined by the SPEI library.
+Given a timeseries of daily precipitation amounts [mm], the function calculates 
+the Standardized Precipitation Index (SPI) as it is created and defined by the SPEI library.
 This function computes the climdex index spi at multiple scales.
 }
 \references{

@@ -4,10 +4,11 @@
 \alias{get.outofbase.quantiles}
 \title{Method for getting threshold quantiles for use in computing indices}
 \usage{
-get.outofbase.quantiles(tmax = NULL, tmin = NULL, prec = NULL,
-  tmax.dates = NULL, tmin.dates = NULL, prec.dates = NULL,
-  base.range = c(1961, 1990), n = 5, temp.qtiles = c(0.1, 0.9),
-  prec.qtiles = c(0.75, 0.95, 0.99), min.base.data.fraction.present = 0.1)
+get.outofbase.quantiles(tmax = NULL, tmin = NULL, tavg = NULL,
+  prec = NULL, tmax.dates = NULL, tmin.dates = NULL, tavg.dates = NULL,
+  prec.dates = NULL, base.range = c(1961, 1990), n = 5,
+  temp.qtiles = c(0.1, 0.25, 0.75, 0.9), prec.qtiles = c(0.25, 0.75, 0.95,
+  0.99), min.base.data.fraction.present = 0.1)
 }
 \arguments{
 \item{tmax}{Daily maximum temperature data.}
