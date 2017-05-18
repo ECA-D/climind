@@ -1,13 +1,23 @@
-get.temp.var.quantiles <- function(filled.data, date.series, bs.date.series, qtiles, bs.date.range, n, in.base=FALSE, min.base.data.fraction.present=0.1) {
+get.temp.var.quantiles <- function(filled.data, date.series, bs.date.series, 
+                                   qtiles, bs.date.range, n, in.base=FALSE, 
+                                   min.base.data.fraction.present=0.1) {
   base.data <- create.filled.series(filled.data, date.series, bs.date.series)
   if(in.base)
-    return(list(outbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, min.fraction.present=min.base.data.fraction.present),
-                inbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, get.bootstrap.data=TRUE, min.fraction.present=min.base.data.fraction.present)))
+    return(list(outbase=zhang.running.qtile(base.data, dates.base=bs.date.series, 
+                                            qtiles=qtiles, 
+                                            bootstrap.range=bs.date.range, n=n, 
+                                            min.fraction.present=min.base.data.fraction.present),
+                inbase=zhang.running.qtile(base.data, dates.base=bs.date.series, 
+                                           qtiles=qtiles, bootstrap.range=bs.date.range, 
+                                           n=n, get.bootstrap.data=TRUE, 
+                                           min.fraction.present=min.base.data.fraction.present)))
   else
-    return(list(outbase=zhang.running.qtile(base.data, dates.base=bs.date.series, qtiles=qtiles, bootstrap.range=bs.date.range, n=n, min.fraction.present=min.base.data.fraction.present)))
+    return(list(outbase=zhang.running.qtile(base.data, dates.base=bs.date.series, 
+                                            qtiles=qtiles, bootstrap.range=bs.date.range, 
+                                            n=n, min.fraction.present=min.base.data.fraction.present)))
 }
 
-get.prec.var.quantiles <- function(filled.prec, date.series, bs.date.range, qtiles=c(0.95, 0.99)) {
+get.prec.var.quantiles <- function(filled.prec, date.series, bs.date.range, qtiles=c(0.25, 0.75, 0.95, 0.99)) {
   wet.days <- !(is.na(filled.prec) | filled.prec < 1)
   inset <- date.series >= bs.date.range[1] & date.series <= bs.date.range[2] & !is.na(filled.prec) & wet.days
   pq <- quantile(filled.prec[inset], qtiles, type=8)
@@ -63,12 +73,15 @@ get.prec.var.quantiles <- function(filled.prec, date.series, bs.date.range, qtil
 #' tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 #'
 #' @export
-get.outofbase.quantiles <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=NULL, tmin.dates=NULL, prec.dates=NULL, 
-                                    base.range=c(1961, 1990), n=5, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), min.base.data.fraction.present=0.1) {
+get.outofbase.quantiles <- function(tmax=NULL, tmin=NULL, tavg=NULL, prec=NULL, tmax.dates=NULL, 
+                                    tmin.dates=NULL, tavg.dates=NULL, prec.dates=NULL, base.range=c(1961, 1990), 
+                                    n=5, temp.qtiles=c(0.10, 0.25, 0.75, 0.90), 
+                                    prec.qtiles=c(0.25, 0.75, 0.95, 0.99), 
+                                    min.base.data.fraction.present=0.1) {
   days.threshold <- 359
-  check.basic.argument.validity(tmax, tmin, prec, tmax.dates, tmin.dates, prec.dates, base.range, n)
+  check.basic.argument.validity(tmax, tmin, tavg, prec, tmax.dates, tmin.dates, tavg.dates, prec.dates, base.range, n)
   
-  d.list <- list(tmin.dates, tmax.dates, prec.dates)
+  d.list <- list(tmin.dates, tmax.dates, tavg.dates, prec.dates)
   all.dates <- do.call(c, d.list[!sapply(d.list, is.null)])
   last.day.of.year <- get.last.monthday.of.year(all.dates)
   cal <- attr(all.dates, "cal")
@@ -92,6 +105,13 @@ get.outofbase.quantiles <- function(tmax=NULL, tmin=NULL, prec=NULL, tmax.dates=
       stop("There is less than a year of tmin data within the base period. Consider revising your base range and/or check your input data.")
     filled.tmin <- create.filled.series(tmin, trunc(tmin.dates, "days"), date.series)
     quantiles$tmin <- get.temp.var.quantiles(filled.tmin, date.series, bs.date.series, temp.qtiles, bs.date.range, n)
+  }
+  
+  if(!is.null(tavg)) {
+    if(get.num.days.in.range(tavg.dates, bs.date.range) <= days.threshold)
+      stop("There is less than a year of tavg data within the base period. Consider revising your base range and/or check your input data.")
+    filled.tavg <- create.filled.series(tavg, trunc(tavg.dates, "days"), date.series)
+    quantiles$tavg <- get.temp.var.quantiles(filled.tavg, date.series, bs.date.series, temp.qtiles, bs.date.range, n)
   }
   
   if(!is.null(prec)) {

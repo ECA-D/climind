@@ -228,7 +228,9 @@ number.days.op.threshold <- function(temp, date.factor, threshold, op="<") {
 #'          ci@@namasks$monthly$tmax
 #' 
 #' @export
-percent.days.op.threshold <- function(temp, dates, jdays, date.factor, threshold.outside.base, base.thresholds, base.range, op='<', max.missing.days) {
+percent.days.op.threshold <- function(temp, dates, jdays, date.factor, 
+                                      threshold.outside.base, base.thresholds, 
+                                      base.range, op='<', max.missing.days) {
   f <- match.fun(op)
   dat <- f(temp, threshold.outside.base[jdays])
   

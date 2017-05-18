@@ -1,7 +1,7 @@
 ## Check that climdexInput data structure is valid.
 valid.climdexInput <- function(x) {
-  temp.quantiles <- c(10, 90)
-  prec.quantiles <- c(75, 95, 99)
+  temp.quantiles <- c(10, 25, 75, 90)
+  prec.quantiles <- c(25, 75, 95, 99)
   errors <- c()
 
   separate.base <- c(tmax=T, tmin=T, tavg=T, prec=F)
@@ -215,14 +215,17 @@ check.quantile.validity <- function(quantiles, present.vars, days.in.base) {
   if(!all(present.vars %in% names(quantiles)))
     stop("Quantiles must be present for all variables provided.\n")
 
-  if(!all(sapply(quantiles[names(quantiles) %in% intersect(present.vars, c("tmax", "tmin"))], function(x) { "outbase" %in% names(x) && all(c("q10", "q90") %in% names(x$outbase)) })))
-    stop("Temperature out-of-base quantiles must contain 10th and 90th percentiles.\n")
+  if(!all(sapply(quantiles[names(quantiles) %in% intersect(present.vars, c("tmax", "tmin", "tavg"))], 
+                 function(x) { "outbase" %in% names(x) && all(c("q10", "q25", "q75", "q90") %in% names(x$outbase)) })))
+    stop("Temperature out-of-base quantiles must contain 10th, 25th, 75th and 90th percentiles.\n")
 
-  if(any(days.in.base > 0) && !all(sapply(quantiles[names(quantiles) %in% intersect(intersect(present.vars, c("tmax", "tmin")), names(days.in.base)[days.in.base > 0])], function(x) { "inbase" %in% names(x) && all(c("q10", "q90") %in% names(x$inbase)) })))
-    stop("Temperature in-base quantiles must contain 10th and 90th percentiles.\n")
+  if(any(days.in.base > 0) && !all(sapply(quantiles[names(quantiles) %in% intersect(intersect(present.vars, c("tmax", "tmin", "tavg")), 
+                                                                                    names(days.in.base)[days.in.base > 0])], 
+                                          function(x) { "inbase" %in% names(x) && all(c("q10", "q25", "q75", "q90") %in% names(x$inbase)) })))
+    stop("Temperature in-base quantiles must contain 10th, 25th, 75th  and 90th percentiles.\n")
 
-  if("prec" %in% names(quantiles) && !all(c("q95", "q99") %in% names(quantiles$prec)))
-    stop("Precipitation quantiles must contain 95th and 99th percentiles.\n")
+  if("prec" %in% names(quantiles) && !all(c("q25", "q75", "q95", "q99") %in% names(quantiles$prec)))
+    stop("Precipitation quantiles must contain 25th, 75th, 95th and 99th percentiles.\n")
 }
 
 #' Method for creating climdexInput object from vectors of data
@@ -329,7 +332,8 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL,
                              base.range=c(1961, 1990), n=5, 
                              northern.hemisphere=TRUE,
                              tavg=NULL, tavg.dates=NULL, 
-                             quantiles=NULL, temp.qtiles=c(0.10, 0.90), prec.qtiles=c(0.75, 0.95, 0.99), 
+                             quantiles=NULL, temp.qtiles=c(0.10, 0.25, 0.75, 0.90), 
+                             prec.qtiles=c(0.25, 0.75, 0.95, 0.99), 
                              max.missing.days=c(annual=15, halfyear=10, seasonal=8, monthly=3),
                              min.base.data.fraction.present=0.1) {
   
@@ -394,7 +398,7 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL,
   ## Establish some truth values for later use in logic...
   days.threshold <- 359
   present.dates <- sapply(present.var.list, function(x) get(paste(x, "dates", sep=".")))
-  quantile.dates <- list(tmax=tmax.dates, tmin=tmin.dates, prec=prec.dates)
+  quantile.dates <- list(tmax=tmax.dates, tmin=tmin.dates, tavg=tavg.dates, prec=prec.dates)
   days.in.base <- sapply(quantile.dates, get.num.days.in.range, bs.date.range)
 
   ## Check that provided quantiles, if any, are valid
@@ -417,6 +421,8 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL,
       delayedAssign("tmax", get.temp.var.quantiles(filled.list$tmax, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
     if(days.in.base['tmin'] > days.threshold)
       delayedAssign("tmin", get.temp.var.quantiles(filled.list$tmin, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
+    if(days.in.base['tavg'] > days.threshold)
+      delayedAssign("tavg", get.temp.var.quantiles(filled.list$tavg, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
     if(days.in.base['prec'] > days.threshold)
       delayedAssign("prec", get.prec.var.quantiles(filled.list$prec, date.series, bs.date.range, prec.qtiles), assign.env=quantiles)
   } else {
@@ -474,8 +480,7 @@ climdexInput.raw <- function(tmax=NULL, tmin=NULL, prec=NULL,
 #' @param tavg.file Name of file containing daily mean temperature data.
 #' @param data.columns Column names for tmin, tmax, and prec data.
 #' @param date.types Column names for tmin, tmax, and prec data (see notes).
-#' @param na.strings Strings used for NA values; passed to
-#' \code{\link[utils]{read.csv}}.
+#' @param na.strings Strings used for NA values; passed to \link[utils]{read.table}
 #' @param cal The calendar type used in the input files.
 #' @template climdexInput_common_params
 #' @param northern.hemisphere Whether this point is in the northern hemisphere.
@@ -499,8 +504,8 @@ climdexInput.csv <- function(tmax.file=NULL, tmin.file=NULL, prec.file=NULL,
                              na.strings=NULL, cal="gregorian", date.types=NULL, 
                              n=5, northern.hemisphere=TRUE,
                              tavg.file=NULL, 
-                             quantiles=NULL, temp.qtiles=c(0.10, 0.90), 
-                             prec.qtiles=c(0.75, 0.95, 0.99), 
+                             quantiles=NULL, temp.qtiles=c(0.10, 0.25, 0.75, 0.90), 
+                             prec.qtiles=c(0.25, 0.75, 0.95, 0.99), 
                              max.missing.days=c(annual=15, halfyear=10, seasonal=8, monthly=3),
                              min.base.data.fraction.present=0.1) {
   

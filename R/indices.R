@@ -556,8 +556,8 @@ climdex.cdd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"),
 #' Wet spells are considered to be sequences of days where daily precipitation
 #' is at least 1mm per day.
 #' 
-#' @template cwd_common
-#' @templateVar cdxvar cwd
+#' @template cdd_common
+#' @templateVar cdxvar cdd
 #' @templateVar cdxdescription an annual timeseries of the CWD index.
 #' @template get_generic_example
 #' 
@@ -942,7 +942,8 @@ days.op.threshold <- function(temp, dates, jdays, date.factor, threshold.outside
 #' @export
 climdex.cd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q25", precip.op="<", temp.thresh="q25", temp.op="<") {
   
-  stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec) && !is.null(ci@data$tavg) && !is.null(ci@quantiles$tavg))
+  stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec) && !is.null(ci@data$prec) && !is.null(ci@quantiles$tavg)); 
+  
   daily.prec <- ci@data$prec
   daily.temp <- ci@data$tavg
   q.precip <- ci@quantiles$prec[[precip.thresh]]
