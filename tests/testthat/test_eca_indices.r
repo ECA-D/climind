@@ -98,29 +98,34 @@ context("tavg indices")
 
 test_that("tavg indices annual & monthly", {
   tn <- eca.input('regressionInput/TN_STAID000162.txt', 'TN', 'DATE')
+  tx <- eca.input('regressionInput/TX_STAID000162.txt', 'TX', 'DATE')
   tg <- eca.input('regressionInput/TG_STAID000162.txt', 'TG', 'DATE')
   prec <- eca.input('regressionInput/RR_STAID000162.txt', 'RR', 'DATE')
 
-  ci_temp <- climdexInput.raw(tmin = tn$TN, tavg = tg$TG, prec = prec$RR,
-                              tmin.dates = tn$DATE, prec.dates = prec$DATE, tavg.dates = tg$DATE,
+  # ci_temp <- climdexInput.raw(tmin = tn$TN, tavg = tg$TG, prec = prec$RR,
+  #                             tmin.dates = tn$DATE, prec.dates = prec$DATE, tavg.dates = tg$DATE,
+  #                             base.range=c(1961, 1991))
+  
+  ci_temp <- climdexInput.raw(tmin = tn$TN, tmax = tx$TX, prec = prec$RR, tavg = tg$TG,
+                              tmin.dates = tn$DATE, prec.dates = prec$DATE, tmax.dates = tx$DATE,tavg.dates = tg$DATE,
                               base.range=c(1961, 1991))
 
   ##tavg
   ci_hd17        <- climdex.hd17(ci_temp, freq=c("annual"))
   #ci_tmndaymin   <- climdex.tmndaymin(ci_temp, freq=c("monthly"))
   #ci_tmndaymax   <- climdex.tmndaymax(ci_temp, freq=c("monthly"))
-  # ci_cd        <- climdex.cd(ci_temp, freq=c("annual"))
-  # ci_cw        <- climdex.cw(ci_temp, freq=c("monthly"))
-  # ci_wd        <- climdex.wd(ci_temp, freq=c("monthly"))
-  # ci_ww        <- climdex.ww(ci_temp, freq=c("monthly"))
+   ci_cd        <- climdex.cd(ci_temp, freq=c("annual"))
+   ci_cw        <- climdex.cw(ci_temp, freq=c("monthly"))
+   ci_wd        <- climdex.wd(ci_temp, freq=c("monthly"))
+   ci_ww        <- climdex.ww(ci_temp, freq=c("monthly"))
 
   expect_equal_to_reference(ci_hd17, "regressionOutput/hd17_deBilt.rds")
   # expect_equal_to_reference(ci_tmndaymin, "regressionOutput/tmndaymin_deBilt.rds")
   # expect_equal_to_reference(ci_tmndaymax, "regressionOutput/tmndaymax_deBilt.rds")
-  # expect_equal_to_reference(ci_cd, "regressionOutput/cd_deBilt.rds")
-  # expect_equal_to_reference(ci_cw, "regressionOutput/cw_deBilt.rds")
-  # expect_equal_to_reference(ci_wd, "regressionOutput/wd_deBilt.rds")
-  # expect_equal_to_reference(ci_ww, "regressionOutput/ww_deBilt.rds")
+   expect_equal_to_reference(ci_cd, "regressionOutput/cd_deBilt.rds")
+   expect_equal_to_reference(ci_cw, "regressionOutput/cw_deBilt.rds")
+   expect_equal_to_reference(ci_wd, "regressionOutput/wd_deBilt.rds")
+   expect_equal_to_reference(ci_ww, "regressionOutput/ww_deBilt.rds")
 
 })
 
