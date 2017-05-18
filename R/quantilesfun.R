@@ -53,7 +53,6 @@ get.prec.var.quantiles <- function(filled.prec, date.series, bs.date.range, qtil
 #' @note Units are assumed to be mm/day for precipitation and degrees Celsius
 #' for temperature. No units conversion is performed internally.
 #' 
-#' @examples
 #' library(PCICt)
 #' 
 #' ## Create a climdexInput object from some data already loaded in and
