@@ -4,7 +4,7 @@
 \alias{climdex.tnn}
 \title{Monthly Minimum of Daily Minimum Temperature}
 \usage{
-climdex.tnn(ci, freq = c("monthly", "annual"))
+climdex.tnn(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

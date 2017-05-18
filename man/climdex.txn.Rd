@@ -4,7 +4,7 @@
 \alias{climdex.txn}
 \title{Monthly Minimum of Daily Maximum Temperature}
 \usage{
-climdex.txn(ci, freq = c("monthly", "annual"))
+climdex.txn(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

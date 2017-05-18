@@ -4,7 +4,7 @@
 \alias{climdex.prcptot}
 \title{Total Daily Precipitation}
 \usage{
-climdex.prcptot(ci, freq = c("monthly", "annual"))
+climdex.prcptot(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

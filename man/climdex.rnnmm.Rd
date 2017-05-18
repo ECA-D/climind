@@ -4,7 +4,8 @@
 \alias{climdex.rnnmm}
 \title{Precipitation Exceeding A Specified Amount Per Day}
 \usage{
-climdex.rnnmm(ci, threshold = 1, freq = c("monthly", "annual"))
+climdex.rnnmm(ci, threshold = 1, freq = c("monthly", "annual", "halfyear",
+  "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

@@ -4,7 +4,7 @@
 \alias{climdex.cfd}
 \title{Consecutive Frost Days}
 \usage{
-climdex.cfd(ci, freq = c("monthly", "annual"),
+climdex.cfd(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
   spells.can.span.years = FALSE)
 }
 \arguments{

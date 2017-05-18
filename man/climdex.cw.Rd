@@ -4,7 +4,7 @@
 \alias{climdex.cw}
 \title{Cold-wet days}
 \usage{
-climdex.cw(ci, freq = c("annual", "monthly", "halfyear", "seasonal"),
+climdex.cw(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
   precip.thresh = "q75", precip.op = ">", temp.thresh = "q25",
   temp.op = "<")
 }

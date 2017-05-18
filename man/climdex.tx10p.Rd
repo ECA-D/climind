@@ -4,7 +4,7 @@
 \alias{climdex.tx10p}
 \title{Percent of Values Below 10th Percentile Daily Maximum Temperature}
 \usage{
-climdex.tx10p(ci, freq = c("monthly", "annual"))
+climdex.tx10p(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

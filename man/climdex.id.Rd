@@ -4,7 +4,7 @@
 \alias{climdex.id}
 \title{Icing Days}
 \usage{
-climdex.id(ci, freq = c("monthly", "annual"))
+climdex.id(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

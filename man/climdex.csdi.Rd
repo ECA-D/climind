@@ -4,7 +4,7 @@
 \alias{climdex.csdi}
 \title{Cold Spell Duration Index}
 \usage{
-climdex.csdi(ci, freq = c("monthly", "annual"),
+climdex.csdi(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
   spells.can.span.years = FALSE)
 }
 \arguments{

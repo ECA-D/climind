@@ -4,7 +4,7 @@
 \alias{climdex.hd17}
 \title{Heating Degree Days}
 \usage{
-climdex.hd17(ci, freq = c("monthly", "annual"))
+climdex.hd17(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput. Here the daily maximum temperature.}

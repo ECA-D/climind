@@ -4,7 +4,7 @@
 \alias{climdex.csu}
 \title{Consecutive Summer Days}
 \usage{
-climdex.csu(ci, freq = c("monthly", "annual"),
+climdex.csu(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
   spells.can.span.years = FALSE)
 }
 \arguments{

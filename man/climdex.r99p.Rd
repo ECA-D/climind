@@ -4,7 +4,7 @@
 \alias{climdex.r99p}
 \title{Total Daily Precipitation Exceeding 99\%ile Threshold}
 \usage{
-climdex.r99p(ci, freq = c("monthly", "annual"))
+climdex.r99p(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

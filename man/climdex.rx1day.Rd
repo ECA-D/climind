@@ -4,7 +4,7 @@
 \alias{climdex.rx1day}
 \title{Monthly Maximum 1-day Precipitation}
 \usage{
-climdex.rx1day(ci, freq = c("monthly", "annual"))
+climdex.rx1day(ci, freq = c("monthly", "annual", "halfyear", "seasonal"))
 }
 \arguments{
 \item{ci}{Object of type climdexInput.}

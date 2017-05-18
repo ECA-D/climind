@@ -4,8 +4,9 @@
 \alias{climdex.cd}
 \title{Compound Indices}
 \usage{
-climdex.cd(ci, freq = c("annual", "monthly"), precip.thresh = "q25",
-  precip.op = "<", temp.thresh = "q25", temp.op = "<")
+climdex.cd(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
+  precip.thresh = "q25", precip.op = "<", temp.thresh = "q25",
+  temp.op = "<")
 }
 \arguments{
 \item{ci}{Object of type climdexInput (representing the daily precipitation [mm] and the averaged daily temperature [C])}
