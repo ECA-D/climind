@@ -47,11 +47,3 @@ tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 ## Create a timeseries of annual SDII values.
 sdii <- climdex.sdii(ci)
 }
-\references{
-\url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
-}
-\seealso{
-\code{\link{climdexInput.raw}}, \code{\link{climdexInput.csv}}.
-}
-\keyword{climate}
-\keyword{ts}

@@ -8,11 +8,8 @@
 #' 
 #' @param ci Object of type climdexInput.
 #' @return A vector containing the number of frost days for each year.
-#' @template generic_seealso_references
-#' 
 #' @templateVar cdxvar fd
 #' @templateVar cdxdescription an annual timeseries of the number of frost days.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.fd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -29,7 +26,6 @@ climdex.fd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) 
 #' 
 #' @param ci Object of type climdexInput.
 #' @return A vector containing the number of summer days for each year.
-#' @template generic_seealso_references
 #' @templateVar cdxvar su
 #' @templateVar cdxdescription an annual timeseries of the number of summer days.
 #' @template get_generic_example
@@ -49,10 +45,8 @@ climdex.su <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) 
 #' 
 #' @param ci Object of type climdexInput.
 #' @return A vector containing the number of icing days for each year.
-#' @template generic_seealso_references
 #' @templateVar cdxvar id
 #' @templateVar cdxdescription an annual timeseries of the number of icing days.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.id <- function(ci,  freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -69,10 +63,8 @@ climdex.id <- function(ci,  freq=c("monthly", "annual", "halfyear", "seasonal"))
 #' 
 #' @param ci Object of type climdexInput.
 #' @return A vector containing the number of frost days for each year.
-#' @template generic_seealso_references
 #' @templateVar cdxvar tr
 #' @templateVar cdxdescription an annual timeseries of the number of tropical nights.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.tr <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -159,10 +151,8 @@ climdex.gsl <- function(ci, gsl.mode=c("GSL", "GSL_first", "GSL_max", "GSL_sum")
 #' @param ci Object of type climdexInput.
 #' @param freq Time frequency to aggregate to.
 #' @return A vector containing the value of the index for each month.
-#' @template generic_seealso_references
 #' @templateVar cdxvar txx
 #' @templateVar cdxdescription a monthly timeseries of maximum daily maximum temperature.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.txx <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -179,7 +169,6 @@ climdex.txx <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"))
 #' @param ci Object of type climdexInput.
 #' @param freq Time frequency to aggregate to.
 #' @return A vector containing the value of the index for each month.
-#' @template generic_seealso_references
 #' @templateVar cdxvar tnx
 #' @templateVar cdxdescription a monthly timeseries of maximum daily minimum temperature.
 #' @template get_generic_example
@@ -199,10 +188,8 @@ climdex.tnx <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"))
 #' @param ci Object of type climdexInput.
 #' @param freq Time frequency to aggregate to.
 #' @return A vector containing the value of the index for each month.
-#' @template generic_seealso_references
 #' @templateVar cdxvar txn
 #' @templateVar cdxdescription a monthly timeseries of minimum daily maximum temperature.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.txn <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -219,10 +206,8 @@ climdex.txn <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"))
 #' @param ci Object of type climdexInput.
 #' @param freq Time frequency to aggregate to.
 #' @return A vector containing the value of the index for each month.
-#' @template generic_seealso_references
 #' @templateVar cdxvar tnn
 #' @templateVar cdxdescription a monthly timeseries of minimum daily minimum temperature.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.tnn <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -243,10 +228,8 @@ climdex.tnn <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"))
 #' @template threshold_indices_args
 #' @template missing_values_caveat
 #'
-#' @template generic_seealso_references
 #' @templateVar cdxvar tn10p
 #' @templateVar cdxdescription a monthly timeseries of the TN10p index.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.tn10p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -264,11 +247,8 @@ climdex.tn10p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"
 #' @template threshold_indices_block
 #' @template threshold_indices_args
 #' @template missing_values_caveat
-#'
-#' @template generic_seealso_references
 #' @templateVar cdxvar tx10p
 #' @templateVar cdxdescription a monthly timeseries of the TX10p index.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.tx10p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -286,11 +266,7 @@ climdex.tx10p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"
 #' @template threshold_indices_block
 #' @template threshold_indices_args
 #' @template missing_values_caveat
-#'
-#' @template generic_seealso_references
 #' @templateVar cdxvar tn90p
-#' @templateVar cdxdescription a monthly timeseries of the TN90p index.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.tn90p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -308,11 +284,7 @@ climdex.tn90p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"
 #' @template threshold_indices_block
 #' @template threshold_indices_args
 #' @template missing_values_caveat
-#'
-#' @template generic_seealso_references
 #' @templateVar cdxvar tx90p
-#' @templateVar cdxdescription a monthly timeseries of the TX90p index.
-#' @template get_generic_example
 #' 
 #' @export
 climdex.tx90p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -393,7 +365,7 @@ climdex.csdi <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")
 #' temperature range.
 #' @note This function creates results which may differ in the 3rd decimal
 #' place from the results from fclimdex.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar dtr
 #' @templateVar cdxdescription a monthly timeseries of mean diurnal temperature range.
 #' @template get_generic_example
@@ -413,7 +385,7 @@ climdex.dtr <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"))
 #' @param ci Object of type climdexInput.
 #' @param freq Time frequency to aggregate to.
 #' @template rx5day_common
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar rx1day
 #' @templateVar cdxdescription a timeseries of monthly maximum 1-day precipitation.
 #' @template get_generic_example
@@ -435,7 +407,7 @@ climdex.rx1day <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal
 #' @param center.mean.on.last.day Whether to center the 5-day running mean on
 #' the last day of the window, instead of the center day.
 #' @template rx5day_common
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar rx5day
 #' @templateVar cdxdescription a timeseries of monthly maximum 5-day consecutive precipitation.
 #' @template get_generic_example
@@ -458,7 +430,7 @@ climdex.rx5day <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal
 #' @return A vector containing the value of the index for each year.
 #' @note fclimdex rounds to 1 decimal place, whereas climdex.sdii does not.
 #' This results in some small differences.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar sdii
 #' @templateVar cdxdescription a timeseries of annual SDII values.
 #' @template get_generic_example
@@ -477,7 +449,7 @@ climdex.sdii <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")
 #' 
 #' @param ci Object of type climdexInput.
 #' @return A vector containing the value of the index for each year.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar r10mm
 #' @templateVar cdxdescription an annual timeseries of the R10mm index.
 #' @template get_generic_example
@@ -496,7 +468,7 @@ climdex.r10mm <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"
 #' 
 #' @param ci Object of type climdexInput.
 #' @return A vector containing the value of the index for each year.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar r20mm
 #' @templateVar cdxdescription an annual timeseries of the R20mm index.
 #' @template get_generic_example
@@ -516,7 +488,7 @@ climdex.r20mm <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"
 #' @param ci Object of type climdexInput.
 #' @param threshold The threshold to be used for Rnnmm.
 #' @return A vector containing the value of the index for each year.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar rnnmm
 #' @templateVar cdxdescription an annual timeseries of the R1mm index.
 #' @template get_generic_example
@@ -577,7 +549,7 @@ climdex.cwd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"),
 #' @param ci Object of type climdexInput.
 #' @return A vector containing an annual timeseries of precipitation exceeding
 #' the threshold.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar r75p
 #' @templateVar cdxdescription an annual timeseries of the R75p index.
 #' @template get_generic_example
@@ -599,7 +571,7 @@ climdex.r75p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")
 #' @param ci Object of type climdexInput.
 #' @return A vector containing an annual timeseries of precipitation exceeding
 #' the threshold.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar r95p
 #' @templateVar cdxdescription an annual timeseries of the R95p index.
 #' @template get_generic_example
@@ -620,7 +592,7 @@ climdex.r95p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")
 #' @param ci Object of type climdexInput.
 #' @return A vector containing an annual timeseries of precipitation exceeding
 #' the threshold.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar r99p
 #' @templateVar cdxdescription an annual timeseries of the R99p index.
 #' @template get_generic_example
@@ -641,7 +613,7 @@ climdex.r99p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")
 #' @param ci Object of type climdexInput.
 #' @return A vector containing an annual timeseries of precipitation exceeding
 #' the threshold.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar r75ptot
 #' @templateVar cdxdescription an annual timeseries of the R75pTOT index.
 #' @template get_generic_example
@@ -665,7 +637,7 @@ climdex.r75ptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasona
 #' @param ci Object of type climdexInput.
 #' @return A vector containing an annual timeseries of precipitation exceeding
 #' the threshold.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar r95ptot
 #' @templateVar cdxdescription an annual timeseries of the R95pTOT index.
 #' @template get_generic_example
@@ -689,7 +661,7 @@ climdex.r95ptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasona
 #' @param ci Object of type climdexInput.
 #' @return A vector containing an annual timeseries of precipitation exceeding
 #' the threshold.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar r99ptot
 #' @templateVar cdxdescription an annual timeseries of the R99pTOT index.
 #' @template get_generic_example
@@ -712,7 +684,7 @@ climdex.r99ptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasona
 #' 
 #' @param ci Object of type climdexInput.
 #' @return A vector containing an annual timeseries of precipitation in wet days.
-#' @template generic_seealso_references
+
 #' @templateVar cdxvar prcptot
 #' @templateVar cdxdescription an annual timeseries of the sum of precipitation in wet days.
 #' @template get_generic_example
@@ -937,7 +909,7 @@ days.op.threshold <- function(temp, dates, jdays, date.factor, threshold.outside
 #' Note: this function doesnt use directly tavg but derives it from tmax & tmin (concistent with .ncdf)
 #' @param ci Object of type climdexInput (representing the daily precipitation [mm] and the averaged daily temperature [C])
 #' @return A vector containing an annual timeseries of precipitation in wet days.
-#' @template generic_seealso_references
+
 #'
 #' @export
 climdex.cd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q25", precip.op="<", temp.thresh="q25", temp.op="<") {
@@ -969,7 +941,7 @@ climdex.cd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), 
 #'
 #' @param ci Object of type climdexInput (representing the daily precipitation [mm] and the averaged daily temperature [C])
 #' @return A vector containing an annual timeseries of precipitation in wet days.
-#' @template generic_seealso_references
+
 #'
 #' @export
 climdex.cw <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q75", precip.op=">", temp.thresh="q25", temp.op="<") {
@@ -1000,7 +972,6 @@ climdex.cw <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), 
 #'
 #' @param ci Object of type climdexInput (representing the daily precipitation [mm] and the averaged daily temperature [C])
 #' @return A vector containing an annual timeseries of precipitation in wet days.
-#' @template generic_seealso_references
 #'
 #' @export
 climdex.wd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q25", precip.op="<", temp.thresh="q75", temp.op=">") {
@@ -1031,7 +1002,6 @@ climdex.wd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), 
 #'
 #' @param ci Object of type climdexInput (representing the daily precipitation [mm] and the averaged daily temperature [C])
 #' @return A vector containing an annual timeseries of precipitation in wet days.
-#' @template generic_seealso_references
 #'
 #' @export
 climdex.ww <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"), precip.thresh="q75", precip.op=">", temp.thresh="q75", temp.op=">") {

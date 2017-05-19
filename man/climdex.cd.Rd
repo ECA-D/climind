@@ -24,11 +24,3 @@ This function takes a climdexInput object as input and computes the climdex
 index CD: the number of days where TG<25 & RR<25 (for wet days: days where precipitation is at least 1mm).
 Note: this function doesnt use directly tavg but derives it from tmax & tmin (concistent with .ncdf)
 }
-\references{
-\url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
-}
-\seealso{
-\code{\link{climdexInput.raw}}, \code{\link{climdexInput.csv}}.
-}
-\keyword{climate}
-\keyword{ts}
