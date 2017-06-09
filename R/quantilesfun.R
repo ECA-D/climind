@@ -122,6 +122,12 @@ get.outofbase.quantiles <- function(tmax=NULL, tmin=NULL, tavg=NULL, prec=NULL, 
   return(quantiles)
 }
 
+## Returns an n-day running quantile for each day of data (dimensions c(dpy, q))
+running.quantile <- function(data, n, q, dpy, min.fraction) {
+  ret <- .Call("running_quantile_windowed", data, n, q, dpy, min.fraction, PACKAGE='climind')
+  dim(ret) <- c(length(q), dpy)
+  return(t(ret))
+}
 
 #' Climind quantile function
 #' 
