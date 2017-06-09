@@ -38,8 +38,3 @@ It is based on the "percent.days.op.threshold"
 \note{
 If date.factor is omitted, daily series will be returned.
 }
-\seealso{
-\link{climdexInput-class}.
-}
-\keyword{climate}
-\keyword{ts}

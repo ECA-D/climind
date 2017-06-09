@@ -21,8 +21,7 @@ A timeseries of sums of numbers above the threshold for each period.
 \description{
 This function returns the sum of values above a threshold for each period
 (as defined by date.factor).
-}
-\details{
+
 This routine sums up all values which exceed or are below (depending on op)
 the given threshold.
 }

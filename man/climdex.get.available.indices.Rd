@@ -16,8 +16,7 @@ A vector containing an annual timeseries of precipitation in wet days.
 }
 \description{
 This function returns a vector of (function) names of available indices.
-}
-\details{
+
 This function takes a climdexInput object as input and returns the names of
 all the indices which may be computed or, if \code{get.function.names} is
 TRUE (the default), the names of the functions corresponding to the indices.

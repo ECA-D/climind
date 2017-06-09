@@ -20,8 +20,7 @@ TRUE replaced with FALSE.
 \description{
 Produces a sequence of booleans of the same length as input, with sequences
 of TRUE values shorter than n replaced with FALSE.
-}
-\details{
+
 This function takes a series of booleans and returns a sequence of booleans
 of equal length, with all sequences of TRUE of length \code{n} or shorter
 replaced with sequences of FALSE. NA values are replaced with

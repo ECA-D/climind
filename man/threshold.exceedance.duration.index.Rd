@@ -31,8 +31,7 @@ A timeseries of maximum spell lengths for each period.
 \description{
 This function returns the number of spells of more than \code{min.length}
 days which exceed or are below the given threshold.
-}
-\details{
+
 This routine compares data to the thresholds using the given operator,
 generating a series of TRUE or FALSE values; these values are then filtered
 to remove any sequences of less than \code{min.length} days of TRUE values.

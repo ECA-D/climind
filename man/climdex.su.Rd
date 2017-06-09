@@ -39,6 +39,5 @@ ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
 ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
 tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
 
-## Create an annual timeseries of the number of summer days.
-su <- climdex.su(ci)
+## Create 
 }

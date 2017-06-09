@@ -14,8 +14,7 @@ A vector containing the number of frost days for each year.
 }
 \description{
 This function computes the climdex index FD.
-}
-\details{
+
 This function takes a climdexInput object as input and computes the FD (frost
 days) climdex index: that is, the annual count of days where daily minimum
 temperature drops below 0 degrees Celsius.

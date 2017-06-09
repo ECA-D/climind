@@ -23,8 +23,7 @@ time interval.
 }
 \description{
 Produces sums of values that exceed (or are below) the specified threshold.
-}
-\details{
+
 This function takes a data series, the number of days in the running window,
 a date factor to aggregate by, and an optional modifier parameter
 (center.mean.on.last.day). It computes the n-day running sum of

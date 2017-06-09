@@ -4,42 +4,47 @@
 \alias{climdexInput.raw}
 \title{Method for creating climdexInput object from vectors of data}
 \usage{
-climdexInput.raw(tmax = NULL, tmin = NULL, prec = NULL,
-  tmax.dates = NULL, tmin.dates = NULL, prec.dates = NULL,
-  base.range = c(1961, 1990), n = 5, northern.hemisphere = TRUE,
-  tavg = NULL, tavg.dates = NULL, quantiles = NULL, temp.qtiles = c(0.1,
-  0.25, 0.75, 0.9), prec.qtiles = c(0.25, 0.75, 0.95, 0.99),
-  max.missing.days = c(annual = 15, halfyear = 10, seasonal = 8, monthly = 3),
+climdexInput.raw(tmax = NULL, tmax.dates = NULL, tmin = NULL,
+  tmin.dates = NULL, tavg = NULL, tavg.dates = NULL, prec = NULL,
+  prec.dates = NULL, snow = NULL, snow.dates = NULL, snow_new = NULL,
+  snow_new.dates = NULL, wind = NULL, wind.dates = NULL,
+  wind_gust = NULL, wind_gust.dates = NULL, wind_dir = NULL,
+  wind_dir.dates = NULL, cloud = NULL, cloud.dates = NULL, sun = NULL,
+  sun.dates = NULL, sun_rel = NULL, sun_rel.dates = NULL,
+  quantiles = NULL, temp.qtiles = c(0.1, 0.25, 0.75, 0.9),
+  prec.qtiles = c(0.25, 0.75, 0.95, 0.99), base.range = c(1961, 1990),
+  n = 5, northern.hemisphere = TRUE, max.missing.days = c(annual = 15,
+  halfyear = 10, seasonal = 8, monthly = 3),
   min.base.data.fraction.present = 0.1)
 }
 \arguments{
 \item{tmax}{Daily maximum temperature data.}
 
-\item{tmin}{Daily minimum temperature data.}
-
-\item{prec}{Daily total precipitation data.}
-
 \item{tmax.dates}{Dates for the daily maximum temperature data.}
 
+\item{tmin}{Daily minimum temperature data.}
+
 \item{tmin.dates}{Dates for the daily minimum temperature data.}
-
-\item{prec.dates}{Dates for the daily total precipitation data.}
-
-\item{base.range}{Years to use for the baseline.}
-
-\item{n}{Number of days to use as window for daily quantiles.}
-
-\item{northern.hemisphere}{Whether this point is in the northern hemisphere.}
 
 \item{tavg}{Daily mean temperature data.}
 
 \item{tavg.dates}{Dates for the daily mean temperature data.}
+
+\item{prec}{Daily total precipitation data.}
+
+\item{prec.dates}{Dates for the daily total precipitation data.}
 
 \item{quantiles}{Threshold quantiles for supplied variables.}
 
 \item{temp.qtiles}{Quantiles to calculate for temperature variables}
 
 \item{prec.qtiles}{Quantiles to calculate for precipitation}
+
+\item{base.range}{Years to use for the baseline.}
+
+\item{n}{Number of days to use as window for daily quantiles.}
+
+\item{northern.hemisphere}{Whether this point is in the northern hemisphere.}
 
 \item{max.missing.days}{Vector containing thresholds for number of days
 allowed missing per year (annual) and per month (monthly).}

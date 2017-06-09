@@ -35,8 +35,7 @@ each year.
 \description{
 This function computes the growing season length (GSL) given the input,
 which is allowed to vary considerably from the ETCCDI definitions.
-}
-\details{
+
 This function is the function used to implement \code{\link{climdex.gsl}}.
 It's designed to be flexible to allow for experimentation and testing of new
 thresholds and methods.
