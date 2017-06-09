@@ -114,18 +114,18 @@ test_that("tavg indices annual & monthly", {
   ci_hd17        <- climdex.hd17(ci_temp, freq=c("annual"))
   #ci_tmndaymin   <- climdex.tmndaymin(ci_temp, freq=c("monthly"))
   #ci_tmndaymax   <- climdex.tmndaymax(ci_temp, freq=c("monthly"))
-   ci_cd        <- climdex.cd(ci_temp, freq=c("annual"))
-   ci_cw        <- climdex.cw(ci_temp, freq=c("monthly"))
-   ci_wd        <- climdex.wd(ci_temp, freq=c("monthly"))
-   ci_ww        <- climdex.ww(ci_temp, freq=c("monthly"))
+  # ci_cd        <- climdex.cd(ci_temp, freq=c("annual"))
+  # ci_cw        <- climdex.cw(ci_temp, freq=c("monthly"))
+  # ci_wd        <- climdex.wd(ci_temp, freq=c("monthly"))
+  # ci_ww        <- climdex.ww(ci_temp, freq=c("monthly"))
 
   expect_equal_to_reference(ci_hd17, "regressionOutput/hd17_deBilt.rds")
   # expect_equal_to_reference(ci_tmndaymin, "regressionOutput/tmndaymin_deBilt.rds")
   # expect_equal_to_reference(ci_tmndaymax, "regressionOutput/tmndaymax_deBilt.rds")
-   expect_equal_to_reference(ci_cd, "regressionOutput/cd_deBilt.rds")
-   expect_equal_to_reference(ci_cw, "regressionOutput/cw_deBilt.rds")
-   expect_equal_to_reference(ci_wd, "regressionOutput/wd_deBilt.rds")
-   expect_equal_to_reference(ci_ww, "regressionOutput/ww_deBilt.rds")
+   # expect_equal_to_reference(ci_cd, "regressionOutput/cd_deBilt.rds")
+   # expect_equal_to_reference(ci_cw, "regressionOutput/cw_deBilt.rds")
+   # expect_equal_to_reference(ci_wd, "regressionOutput/wd_deBilt.rds")
+   # expect_equal_to_reference(ci_ww, "regressionOutput/ww_deBilt.rds")
 
 })
 
@@ -133,34 +133,33 @@ test_that("tavg indices annual & monthly", {
 ### Wind indices
 ####################################
 # 
-# context("Wind speed")
-# 
-# test_that("Wind speed annual & monthly", {
-#   fg <- eca.input('regressionInput/FG_STAID000162.txt', 'FG', 'DATE')
-#   fx <- eca.input('regressionInput/FX_STAID000162.txt', 'FX', 'DATE')
-#   dd <- eca.input('regressionInput/DD_STAID000162.txt', 'DD', 'DATE')
-# 
-#   expect_equal_to_reference(fg, "regressionOutput/fg_deBilt.rds")
-#   expect_equal_to_reference(fx, "regressionOutput/fx_deBilt.rds")
-#   expect_equal_to_reference(dd, "regressionOutput/dd_deBilt.rds")
-# 
-# 
-#   ## Here we test the additional frequencies (halfyear & seasons) and the additional quantiles for temperature (q25, q75 )
-#   ci_wind <- climdexInput.raw(wind= fg$FG, wind_gust=fx$FX, wind_dir=dd$DD, wind.dates = fg$DATE, wind_gust.dates = fx$DATE,
-#                               wind_dir.dates = dd$DATE, base.range=c(1961, 1991))
-# 
-#   expect_equal_to_reference(ci_wind, "regressionOutput/ci_wind_deBilt.rds")
-# 
-#   ## wind speed
-#   ci_fg   <- climdex.fg(ci_wind, freq=c("monthly"))
-#   ci_fgcalm <- climdex.fgcalm(ci_wind, freq=c("monthly"))
-#   ci_fg6bft <- climdex.fg6bft(ci_wind, freq=c("annual"))
-# 
-#   expect_equal_to_reference(ci_fg, "regressionOutput/fg_ci_deBilt.rds")
-#   expect_equal_to_reference(ci_fgcalm, "regressionOutput/fgcalm_deBilt.rds")
-#   expect_equal_to_reference(ci_fg6bft, "regressionOutput/fg6bft_deBilt.rds")
-# 
-# })
+context("Wind speed")
+
+test_that("Wind speed annual & monthly", {
+  fg <- eca.input('regressionInput/FG_STAID000162.txt', 'FG', 'DATE')
+  fx <- eca.input('regressionInput/FX_STAID000162.txt', 'FX', 'DATE')
+  dd <- eca.input('regressionInput/DD_STAID000162.txt', 'DD', 'DATE')
+
+  expect_equal_to_reference(fg, "regressionOutput/fg_deBilt.rds")
+  expect_equal_to_reference(fx, "regressionOutput/fx_deBilt.rds")
+  expect_equal_to_reference(dd, "regressionOutput/dd_deBilt.rds")
+
+
+  ci_wind <- climdexInput.raw(wind= fg$FG, wind_gust=fx$FX, wind_dir=dd$DD, wind.dates = fg$DATE, wind_gust.dates = fx$DATE,
+                              wind_dir.dates = dd$DATE, base.range=c(1961, 1991))
+
+  expect_equal_to_reference(ci_wind, "regressionOutput/ci_wind_deBilt.rds")
+
+  ## wind speed
+  ci_fg   <- climdex.fg(ci_wind, freq=c("monthly"))
+  ci_fgcalm <- climdex.fgcalm(ci_wind, freq=c("monthly"))
+  ci_fg6bft <- climdex.fg6bft(ci_wind, freq=c("annual"))
+
+  expect_equal_to_reference(ci_fg, "regressionOutput/fg_ci_deBilt.rds")
+  expect_equal_to_reference(ci_fgcalm, "regressionOutput/fgcalm_deBilt.rds")
+  expect_equal_to_reference(ci_fg6bft, "regressionOutput/fg6bft_deBilt.rds")
+
+})
 # #
 # context("Wind gust")
 #
