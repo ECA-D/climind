@@ -25,7 +25,6 @@ climdex.fd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) 
 #' @param ci Object of type climdexInput.
 #' @return A vector containing the number of summer days for each year.
 #' @templateVar cdxvar su
-#' @template get_generic_example
 #' 
 #' @export
 climdex.su <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
@@ -1094,8 +1093,8 @@ climdex.fxstorm <- function(ci,freq=c("annual","halfyear","seasonal","monthly"))
 #' 
 climdex.fxx <- function(ci,freq=c("annual","halfyear","seasonal","monthly")) { 
   stopifnot(!is.null(ci@data$wind_gust))
-  return(tapply.fast(ci@data$wind_gust, ci@date.factors[[match.arg(freq)]], max, na.rm=TRUE) * 
-           ci@namasks[[match.arg(freq)]]$wind_gust)
+  return(suppressWarnings(tapply.fast(ci@data$wind_gust, ci@date.factors[[match.arg(freq)]], max, na.rm=TRUE) * 
+           ci@namasks[[match.arg(freq)]]$wind_gust))
 }
 
 #' Northerly winds
@@ -1190,12 +1189,7 @@ climdex.ddwest <- function(ci,freq=c("annual","halfyear","seasonal","monthly")) 
 #' @param freq Time frequency to aggregate to (default="monthly").
 #' @param center.mean.on.last.day Whether to center the n-day running mean on
 #' the last day of the window, instead of the center day.
-#' 
-
-#' 
 #' @templateVar cdxvar txndaymax
-#' @templateVar cdxdescription a time series of the max of average maximum n-day temperature.
-#' @template get_generic_example
 #' @author Rebekka Posselt (MeteoSwiss)
 #' 
 #' @name climdex.tnday
@@ -1422,8 +1416,8 @@ climdex.sdd <- function(ci,threshold=1,freq=c("annual", "monthly", "halfyear","s
 #' 
 climdex.sdx <- function(ci,freq=c("annual","monthly", "halfyear","seasonal")) { 
   stopifnot(!is.null(ci@data$snow))
-  return(tapply.fast(ci@data$snow, ci@date.factors[[match.arg(freq)]], max, na.rm=TRUE) * 
-           ci@namasks[[match.arg(freq)]]$snow)
+  return(suppressWarnings(tapply.fast(ci@data$snow, ci@date.factors[[match.arg(freq)]], max, na.rm=TRUE) * 
+           ci@namasks[[match.arg(freq)]]$snow))
 }
 
 #' Mean snow depth
