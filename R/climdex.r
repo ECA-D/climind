@@ -410,7 +410,9 @@ climdexInput.raw <- function(tmax=NULL, tmax.dates=NULL,
                        monthly=factor(format(date.series, format="%Y-%m", tz="GMT")))
   
   ## Filled data...
-  var.list <- c("tmax", "tmin", "prec", "tavg")
+  var.list <- c("tmax", "tmin", "tavg", "prec", "snow", "snow_new", "wind", "wind_gust", "wind_dir",
+                "cloud", "sun", "sun_rel")
+  
   present.var.list <- var.list[sapply(var.list, function(x) !is.null(get(x)))]
   
   filled.list <- sapply(present.var.list, function(x) { 
