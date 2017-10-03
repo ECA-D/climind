@@ -78,7 +78,19 @@ get.outofbase.quantiles <- function(tmax=NULL, tmin=NULL, tavg=NULL, prec=NULL, 
                                     prec.qtiles=c(0.25, 0.75, 0.95, 0.99), 
                                     min.base.data.fraction.present=0.1) {
   days.threshold <- 359
-  check.basic.argument.validity(tmax, tmin, tavg, prec, tmax.dates, tmin.dates, tavg.dates, prec.dates, base.range, n)
+  check.basic.argument.validity(tmax=tmax, tmax.dates=tmax.dates,
+                                tmin=tmin, tmin.dates=tmin.dates,
+                                tavg=tavg, tavg.dates=tavg.dates,
+                                prec=prec, prec.dates=prec.dates,
+                                base.range=base.range, n=n,
+                                snow=NULL, snow.dates=NULL,              # All these extra variables can be set to NULL, as 
+                                snow_new=NULL, snow_new.dates=NULL,      # the function does not need to be able to calculate
+                                wind=NULL, wind.dates=NULL,              # their quantiles as they are never needed as quantiles
+                                wind_gust=NULL, wind_gust.dates=NULL,    # for any index.
+                                wind_dir=NULL, wind_dir.dates=NULL,
+                                cloud=NULL, cloud.dates=NULL,
+                                sun=NULL, sun.dates=NULL,
+                                sun_rel=NULL, sun_rel.dates=NULL)
   
   d.list <- list(tmin.dates, tmax.dates, tavg.dates, prec.dates)
   all.dates <- do.call(c, d.list[!sapply(d.list, is.null)])
