@@ -89,6 +89,7 @@ climdex.tr <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) 
 #' growing seasons found.
 #' 
 #' @param ci Object of type climdexInput.
+#' @param freq the requested time resolution. Not used in this function, included to make the interface consistent.
 #' @param gsl.mode Growing season length method to use.
 #' @return A vector containing the number of days in the growing season for
 #' each year.
@@ -107,7 +108,7 @@ climdex.tr <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) 
 #' @templateVar cdxvar gsl
 #' 
 #' @export
-climdex.gsl <- function(ci, gsl.mode=c("GSL", "GSL_first", "GSL_max", "GSL_sum")) {
+climdex.gsl <- function(ci, freq = NULL, gsl.mode=c("GSL", "GSL_first", "GSL_max", "GSL_sum")) {
   stopifnot(!is.null(ci@data$tavg))
   ## Gotta shift dates so that July 1 is considered Jan 1 of same year in southern hemisphere
   if(ci@northern.hemisphere) {
