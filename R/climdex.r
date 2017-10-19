@@ -20,18 +20,6 @@ valid.climdexInput <- function(x) {
      !all(present.data.vars %in% names(x@namasks$annual) & present.data.vars %in% names(x@namasks$halfyear) &
           present.data.vars %in% names(x@namasks$seasonal) & present.data.vars %in% names(x@namasks$monthly)))
     errors <- c(errors, "NA mask for monthly, seasonal, halfyear and annual must contain data for all variables supplied.")
-  
-  ## Check that appropriate thresholds are present.
-  need.base.data <- get.num.days.in.range(x@dates, x@base.range) > 0
-  errors <- do.call(c, c(list(errors), lapply(intersect(present.data.vars, c("tmax", "tmin", "prec")), 
-                                              function(n) {
-    if(is.null(quantiles[n]))
-      return(NULL)
-    ## FIXME: This test isn't necessarily valid and prevents calculating indices when no base period data is available.
-    if(!(n %in% ls(envir=x@quantiles)))
-      return(paste("Quantiles for", n, "are missing."))
-    return(NULL)
-  })))
 
   if(length(x@northern.hemisphere) != 1)
     errors <- c(errors, "northern.hemisphere must be of length 1.")
@@ -224,14 +212,16 @@ check.basic.argument.validity <- function(tmax, tmin, prec, snow,  snow_new, win
 
 
 ## Check validity of quantile input.
-check.quantile.validity <- function(quantiles, present.vars, days.in.base) {
-  if(is.null(quantiles))
+check.quantile.validity <- function(quantiles, present.vars, days.in.base, vars.require.quantiles) {
+  if(is.null(quantiles) && length(vars.require.quantiles) == 0)
     return()
   
-  if(class(quantiles) != "list")
-    stop("Provided quantiles must be a list.")
+  if (!is.null(quantiles)) {
+    if(class(quantiles) != "list")
+      stop("Provided quantiles must be a list.")
+  }
   
-  if(!all(intersect(present.vars, c('tmax', 'tmin', 'tavg', 'prec')) %in% names(quantiles)))
+  if(!all(intersect(present.vars, vars.require.quantiles) %in% names(quantiles)))
     stop("For temperature and precipitation, quantiles must be present for all variables provided.\n")
 
   if(!all(sapply(quantiles[names(quantiles) %in% intersect(present.vars, c("tmax", "tmin", "tavg"))], 
@@ -319,6 +309,7 @@ check.quantile.validity <- function(quantiles, present.vars, days.in.base) {
 #' @template climdexInput_common_params
 #' @param northern.hemisphere Whether this point is in the northern hemisphere.
 #' @param quantiles Threshold quantiles for supplied variables.
+#' @param vars.require.quantiles which variables need to have quantiles present.
 #' @param max.missing.days Vector containing thresholds for number of days
 #' allowed missing per year (annual) and per month (monthly).
 #' @return An object of class \code{\link{climdexInput-class}} for use with
@@ -341,6 +332,7 @@ climdexInput.raw <- function(tmax=NULL, tmax.dates=NULL,
                              sun_rel=NULL, sun_rel.dates=NULL,
                              quantiles=NULL, temp.qtiles=c(0.10, 0.25, 0.75, 0.90),
                              prec.qtiles=c(0.25, 0.75, 0.95, 0.99),
+                             vars.require.quantiles = c('tmax', 'tmin', 'tavg', 'prec'),
                              base.range=c(1961, 1990), n=5, northern.hemisphere=TRUE,
                              max.missing.days=c(annual=15, halfyear=10, seasonal=8, monthly=3),
                              min.base.data.fraction.present=0.1) {
@@ -427,10 +419,9 @@ climdexInput.raw <- function(tmax=NULL, tmax.dates=NULL,
   days.in.base <- sapply(quantile.dates, get.num.days.in.range, bs.date.range)
 
   ## Check that provided quantiles, if any, are valid
-  check.quantile.validity(quantiles, present.var.list, days.in.base)
+  check.quantile.validity(quantiles, present.var.list, days.in.base, vars.require.quantiles)
 
   data.in.base.period <- any(days.in.base != 0)
-  have.quantiles <- all(intersect(present.var.list, c('tmax', 'tmin', 'tavg', 'prec')) %in% names(quantiles))
 
   ## NA masks
   namasks <- list(annual=lapply(filled.list, get.na.mask, date.factors$annual, max.missing.days['annual']), 
@@ -438,20 +429,10 @@ climdexInput.raw <- function(tmax=NULL, tmax.dates=NULL,
                   seasonal=lapply(filled.list, get.na.mask, date.factors$seasonal, max.missing.days['seasonal']),
                   monthly=lapply(filled.list, get.na.mask, date.factors$monthly, max.missing.days['monthly']))
   
-  ## Pad data passed as base if we're missing endpoints...
-  if(!have.quantiles) {
-    quantiles <- new.env(parent=emptyenv())
-
-    if(days.in.base['tmax'] > days.threshold)
-      delayedAssign("tmax", get.temp.var.quantiles(filled.list$tmax, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
-    if(days.in.base['tmin'] > days.threshold)
-      delayedAssign("tmin", get.temp.var.quantiles(filled.list$tmin, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
-    if(days.in.base['tavg'] > days.threshold)
-      delayedAssign("tavg", get.temp.var.quantiles(filled.list$tavg, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
-    if(days.in.base['prec'] > days.threshold)
-      delayedAssign("prec", get.prec.var.quantiles(filled.list$prec, date.series, bs.date.range, prec.qtiles), assign.env=quantiles)
-  } else {
+  if (!is.null(quantiles)) {
     quantiles <- as.environment(quantiles)
+  } else {
+    quantiles = new.env()
   }
   
   return(new("climdexInput", data=filled.list, quantiles=quantiles, namasks=namasks, 
