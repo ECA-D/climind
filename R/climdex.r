@@ -231,8 +231,8 @@ check.quantile.validity <- function(quantiles, present.vars, days.in.base) {
   if(class(quantiles) != "list")
     stop("Provided quantiles must be a list.")
   
-  if(!all(present.vars %in% names(quantiles)))
-    stop("Quantiles must be present for all variables provided.\n")
+  if(!all(intersect(present.vars, c('tmax', 'tmin', 'tavg', 'prec')) %in% names(quantiles)))
+    stop("For temperature and precipitation, quantiles must be present for all variables provided.\n")
 
   if(!all(sapply(quantiles[names(quantiles) %in% intersect(present.vars, c("tmax", "tmin", "tavg"))], 
                  function(x) { "outbase" %in% names(x) && all(c("q10", "q25", "q75", "q90") %in% names(x$outbase)) })))
@@ -430,7 +430,7 @@ climdexInput.raw <- function(tmax=NULL, tmax.dates=NULL,
   check.quantile.validity(quantiles, present.var.list, days.in.base)
 
   data.in.base.period <- any(days.in.base != 0)
-  have.quantiles <- all(present.var.list %in% names(quantiles))
+  have.quantiles <- all(intersect(present.var.list, c('tmax', 'tmin', 'tavg', 'prec')) %in% names(quantiles))
 
   ## NA masks
   namasks <- list(annual=lapply(filled.list, get.na.mask, date.factors$annual, max.missing.days['annual']), 
