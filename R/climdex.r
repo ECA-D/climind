@@ -431,7 +431,6 @@ climdexInput.raw <- function(tmax=NULL, tmax.dates=NULL,
   
   if (length(vars.require.quantiles) > 0) {
     if (is.null(quantiles)) {    # Quantiles required, but none passed. Calculate the quantiles on-the-fly.
-      message('Calculating quantiles on-the-fly')
       quantiles <- new.env(parent=emptyenv())    # Not assigning to list first as the call to as.environment will fail in that case
       if ('tmin' %in% vars.require.quantiles) delayedAssign("tmin", get.temp.var.quantiles(filled.list$tmin, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
       if ('tmax' %in% vars.require.quantiles) delayedAssign("tmax", get.temp.var.quantiles(filled.list$tmax, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
