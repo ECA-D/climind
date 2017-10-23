@@ -213,7 +213,7 @@ check.basic.argument.validity <- function(tmax, tmin, prec, snow,  snow_new, win
 
 ## Check validity of quantile input.
 check.quantile.validity <- function(quantiles, present.vars, days.in.base, vars.require.quantiles) {
-  if(is.null(quantiles) && length(vars.require.quantiles) == 0)
+  if(is.null(quantiles))
     return()
   
   if (!is.null(quantiles)) {
@@ -429,8 +429,17 @@ climdexInput.raw <- function(tmax=NULL, tmax.dates=NULL,
                   seasonal=lapply(filled.list, get.na.mask, date.factors$seasonal, max.missing.days['seasonal']),
                   monthly=lapply(filled.list, get.na.mask, date.factors$monthly, max.missing.days['monthly']))
   
-  if (!is.null(quantiles)) {
-    quantiles <- as.environment(quantiles)
+  if (length(vars.require.quantiles) > 0) {
+    if (is.null(quantiles)) {    # Quantiles required, but none passed. Calculate the quantiles on-the-fly.
+      message('Calculating quantiles on-the-fly')
+      quantiles <- new.env(parent=emptyenv())    # Not assigning to list first as the call to as.environment will fail in that case
+      if ('tmin' %in% vars.require.quantiles) delayedAssign("tmin", get.temp.var.quantiles(filled.list$tmin, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
+      if ('tmax' %in% vars.require.quantiles) delayedAssign("tmax", get.temp.var.quantiles(filled.list$tmax, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
+      if ('tavg' %in% vars.require.quantiles) delayedAssign("tavg", get.temp.var.quantiles(filled.list$tavg, date.series, bs.date.series, temp.qtiles, bs.date.range, n, TRUE, min.base.data.fraction.present), assign.env=quantiles)
+      if ('prec' %in% vars.require.quantiles) delayedAssign("prec", get.prec.var.quantiles(filled.list$prec, date.series, bs.date.range, prec.qtiles), assign.env=quantiles)
+    } else {
+      quantiles <- as.environment(quantiles)
+    }
   } else {
     quantiles = new.env()
   }
