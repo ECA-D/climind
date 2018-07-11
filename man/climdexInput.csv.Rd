@@ -4,13 +4,18 @@
 \alias{climdexInput.csv}
 \title{Method for creating climdexInput object from CSV files}
 \usage{
-climdexInput.csv(tmax.file = NULL, tmin.file = NULL, prec.file = NULL,
-  data.columns = list(tmin = "tmin", tmax = "tmax", prec = "prec"),
-  base.range = c(1961, 1990), na.strings = NULL, cal = "gregorian",
-  date.types = NULL, n = 5, northern.hemisphere = TRUE,
-  tavg.file = NULL, quantiles = NULL, temp.qtiles = c(0.1, 0.9),
-  prec.qtiles = c(0.75, 0.95, 0.99), max.missing.days = c(annual = 15,
-  halfyear = 10, seasonal = 8, monthly = 3),
+climdexInput.csv(tmax.file = NULL, tmin.file = NULL, tavg.file = NULL,
+  prec.file = NULL, snow.file = NULL, snow_new.file = NULL,
+  wind.file = NULL, wind_gust.file = NULL, wind_dir.file = NULL,
+  cloud.file = NULL, sun.file = NULL, sun_rel.file = NULL,
+  data.columns = list(tmin = "tmin", tmax = "tmax", tavg = "tavg", prec =
+  "prec", snow = "snow", snow_new = "snow_new", wind = "wind", wind_gust =
+  "wind_gust", wind_dir = "wind_dir", cloud = "cloud", sun = "sun", sun_rel =
+  "sun_rel"), base.range = c(1961, 1990), na.strings = NULL,
+  cal = "gregorian", date.types = NULL, n = 5,
+  northern.hemisphere = TRUE, quantiles = NULL, temp.qtiles = c(0.1, 0.25,
+  0.75, 0.9), prec.qtiles = c(0.25, 0.75, 0.95, 0.99),
+  max.missing.days = c(annual = 15, halfyear = 10, seasonal = 8, monthly = 3),
   min.base.data.fraction.present = 0.1)
 }
 \arguments{
@@ -18,14 +23,31 @@ climdexInput.csv(tmax.file = NULL, tmin.file = NULL, prec.file = NULL,
 
 \item{tmin.file}{Name of file containing daily minimum temperature data.}
 
+\item{tavg.file}{Name of file containing daily mean temperature data.}
+
 \item{prec.file}{Name of file containing daily total precipitation data.}
+
+\item{snow.file}{Name of file containing daily mean snow height data.}
+
+\item{snow_new.file}{Name of file containing daily mean new snow height data.}
+
+\item{wind.file}{Name of file containing daily mean wind speed data.}
+
+\item{wind_gust.file}{Name of file containing daily wind gust data.}
+
+\item{wind_dir.file}{Name of file containing daily mean wind direction data.}
+
+\item{cloud.file}{Name of file containing daily mean cloud cover data.}
+
+\item{sun.file}{Name of file containing daily mean sunshine duration data.}
+
+\item{sun_rel.file}{Name of file containing daily mean relative sunshine duration data.}
 
 \item{data.columns}{Column names for tmin, tmax, and prec data.}
 
 \item{base.range}{Years to use for the baseline.}
 
-\item{na.strings}{Strings used for NA values; passed to
-\code{\link[utils]{read.csv}}.}
+\item{na.strings}{Strings used for NA values; passed to \link[utils]{read.table}}
 
 \item{cal}{The calendar type used in the input files.}
 
@@ -34,8 +56,6 @@ climdexInput.csv(tmax.file = NULL, tmin.file = NULL, prec.file = NULL,
 \item{n}{Number of days to use as window for daily quantiles.}
 
 \item{northern.hemisphere}{Whether this point is in the northern hemisphere.}
-
-\item{tavg.file}{Name of file containing daily mean temperature data.}
 
 \item{quantiles}{Threshold quantiles for supplied variables.}
 

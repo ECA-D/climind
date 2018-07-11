@@ -20,33 +20,3 @@ This function takes a climdexInput object as input and computes the ID (icing
 days) climdex index: that is, the annual count of days where daily maximum
 temperature is below 0 degrees Celsius.
 }
-\examples{
-library(PCICt)
-
-## Create a climdexInput object from some data already loaded in and
-## ready to go.
-
-## Parse the dates into PCICt.
-tmax.dates <- as.PCICt(do.call(paste, ec.1018935.tmax[,c("year",
-"jday")]), format="\%Y \%j", cal="gregorian")
-tmin.dates <- as.PCICt(do.call(paste, ec.1018935.tmin[,c("year",
-"jday")]), format="\%Y \%j", cal="gregorian")
-prec.dates <- as.PCICt(do.call(paste, ec.1018935.prec[,c("year",
-"jday")]), format="\%Y \%j", cal="gregorian")
-
-## Load the data in.
-ci <- climdexInput.raw(ec.1018935.tmax$MAX_TEMP,
-ec.1018935.tmin$MIN_TEMP, ec.1018935.prec$ONE_DAY_PRECIPITATION,
-tmax.dates, tmin.dates, prec.dates, base.range=c(1971, 2000))
-
-## Create an annual timeseries of the number of icing days.
-id <- climdex.id(ci)
-}
-\references{
-\url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
-}
-\seealso{
-\code{\link{climdexInput.raw}}, \code{\link{climdexInput.csv}}.
-}
-\keyword{climate}
-\keyword{ts}

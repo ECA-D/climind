@@ -98,11 +98,16 @@ context("tavg indices")
 
 test_that("tavg indices annual & monthly", {
   tn <- eca.input('regressionInput/TN_STAID000162.txt', 'TN', 'DATE')
+  tx <- eca.input('regressionInput/TX_STAID000162.txt', 'TX', 'DATE')
   tg <- eca.input('regressionInput/TG_STAID000162.txt', 'TG', 'DATE')
   prec <- eca.input('regressionInput/RR_STAID000162.txt', 'RR', 'DATE')
 
-  ci_temp <- climdexInput.raw(tmin = tn$TN, tavg = tg$TG, prec = prec$RR,
-                              tmin.dates = tn$DATE, prec.dates = prec$DATE, tavg.dates = tg$DATE,
+  # ci_temp <- climdexInput.raw(tmin = tn$TN, tavg = tg$TG, prec = prec$RR,
+  #                             tmin.dates = tn$DATE, prec.dates = prec$DATE, tavg.dates = tg$DATE,
+  #                             base.range=c(1961, 1991))
+  
+  ci_temp <- climdexInput.raw(tmin = tn$TN, tmax = tx$TX, prec = prec$RR, tavg = tg$TG,
+                              tmin.dates = tn$DATE, prec.dates = prec$DATE, tmax.dates = tx$DATE,tavg.dates = tg$DATE,
                               base.range=c(1961, 1991))
 
   ##tavg
@@ -117,10 +122,10 @@ test_that("tavg indices annual & monthly", {
   expect_equal_to_reference(ci_hd17, "regressionOutput/hd17_deBilt.rds")
   # expect_equal_to_reference(ci_tmndaymin, "regressionOutput/tmndaymin_deBilt.rds")
   # expect_equal_to_reference(ci_tmndaymax, "regressionOutput/tmndaymax_deBilt.rds")
-  # expect_equal_to_reference(ci_cd, "regressionOutput/cd_deBilt.rds")
-  # expect_equal_to_reference(ci_cw, "regressionOutput/cw_deBilt.rds")
-  # expect_equal_to_reference(ci_wd, "regressionOutput/wd_deBilt.rds")
-  # expect_equal_to_reference(ci_ww, "regressionOutput/ww_deBilt.rds")
+   # expect_equal_to_reference(ci_cd, "regressionOutput/cd_deBilt.rds")
+   # expect_equal_to_reference(ci_cw, "regressionOutput/cw_deBilt.rds")
+   # expect_equal_to_reference(ci_wd, "regressionOutput/wd_deBilt.rds")
+   # expect_equal_to_reference(ci_ww, "regressionOutput/ww_deBilt.rds")
 
 })
 
@@ -128,142 +133,141 @@ test_that("tavg indices annual & monthly", {
 ### Wind indices
 ####################################
 # 
-# context("Wind speed")
-# 
-# test_that("Wind speed annual & monthly", {
-#   fg <- eca.input('regressionInput/FG_STAID000162.txt', 'FG', 'DATE')
-#   fx <- eca.input('regressionInput/FX_STAID000162.txt', 'FX', 'DATE')
-#   dd <- eca.input('regressionInput/DD_STAID000162.txt', 'DD', 'DATE')
-# 
-#   expect_equal_to_reference(fg, "regressionOutput/fg_deBilt.rds")
-#   expect_equal_to_reference(fx, "regressionOutput/fx_deBilt.rds")
-#   expect_equal_to_reference(dd, "regressionOutput/dd_deBilt.rds")
-# 
-# 
-#   ## Here we test the additional frequencies (halfyear & seasons) and the additional quantiles for temperature (q25, q75 )
-#   ci_wind <- climdexInput.raw(wind= fg$FG, wind_gust=fx$FX, wind_dir=dd$DD, wind.dates = fg$DATE, wind_gust.dates = fx$DATE,
-#                               wind_dir.dates = dd$DATE, base.range=c(1961, 1991))
-# 
-#   expect_equal_to_reference(ci_wind, "regressionOutput/ci_wind_deBilt.rds")
-# 
-#   ## wind speed
-#   ci_fg   <- climdex.fg(ci_wind, freq=c("monthly"))
-#   ci_fgcalm <- climdex.fgcalm(ci_wind, freq=c("monthly"))
-#   ci_fg6bft <- climdex.fg6bft(ci_wind, freq=c("annual"))
-# 
-#   expect_equal_to_reference(ci_fg, "regressionOutput/fg_ci_deBilt.rds")
-#   expect_equal_to_reference(ci_fgcalm, "regressionOutput/fgcalm_deBilt.rds")
-#   expect_equal_to_reference(ci_fg6bft, "regressionOutput/fg6bft_deBilt.rds")
-# 
-# })
+context("Wind speed")
+
+test_that("Wind speed annual & monthly", {
+  fg <- eca.input('regressionInput/FG_STAID000162.txt', 'FG', 'DATE')
+  fx <- eca.input('regressionInput/FX_STAID000162.txt', 'FX', 'DATE')
+  dd <- eca.input('regressionInput/DD_STAID000162.txt', 'DD', 'DATE')
+
+  expect_equal_to_reference(fg, "regressionOutput/fg_deBilt.rds")
+  expect_equal_to_reference(fx, "regressionOutput/fx_deBilt.rds")
+  expect_equal_to_reference(dd, "regressionOutput/dd_deBilt.rds")
+
+
+  ci_wind <- climdexInput.raw(wind= fg$FG, wind_gust=fx$FX, wind_dir=dd$DD, wind.dates = fg$DATE, wind_gust.dates = fx$DATE,
+                              wind_dir.dates = dd$DATE, base.range=c(1961, 1991))
+
+  expect_equal_to_reference(ci_wind, "regressionOutput/ci_wind_deBilt.rds")
+
+  ## wind speed
+  ci_fg   <- climdex.fg(ci_wind, freq=c("monthly"))
+  ci_fgcalm <- climdex.fgcalm(ci_wind, freq=c("monthly"))
+  ci_fg6bft <- climdex.fg6bft(ci_wind, freq=c("annual"))
+
+  expect_equal_to_reference(ci_fg, "regressionOutput/fg_ci_deBilt.rds")
+  expect_equal_to_reference(ci_fgcalm, "regressionOutput/fgcalm_deBilt.rds")
+  expect_equal_to_reference(ci_fg6bft, "regressionOutput/fg6bft_deBilt.rds")
+
+})
 # #
-# context("Wind gust")
+context("Wind gust")
+
+test_that("Wind gust monthly", {
+  fx <- eca.input('regressionInput/FX_STAID000162.txt', 'FX', 'DATE')
+
+  ci_wind <- climdexInput.raw(wind_gust=fx$FX, wind_gust.dates = fx$DATE, base.range=c(1961, 1991))
+
+  ## wind gust
+  ci_fxstorm   <- climdex.fxstorm(ci_wind, freq=c("monthly"))
+  ci_fxx <- climdex.fxx(ci_wind, freq=c("monthly"))
+
+  expect_equal_to_reference(ci_fxstorm, "regressionOutput/fxstorm_deBilt.rds")
+  expect_equal_to_reference(ci_fxx, "regressionOutput/fxx_deBilt.rds")
+})
 #
-# test_that("Wind gust monthly", {
-#   fx <- eca.input('regressionInput/FX_STAID000162.txt', 'FX', 'DATE')
-#
-#   ci_wind <- climdexInput.raw(wind_gust=fx$FX, wind_gust.dates = fx$DATE, base.range=c(1961, 1991))
-#
-#   ## wind gust
-#   ci_fxstorm   <- climdex.fxstorm(ci_wind, freq=c("monthly"))
-#   ci_fxx <- climdex.fxx(ci_wind, freq=c("monthly"))
-#
-#   expect_equal_to_reference(ci_fxstorm, "regressionOutput/fxstorm_deBilt.rds")
-#   expect_equal_to_reference(ci_fxx, "regressionOutput/fxx_deBilt.rds")
-# })
-#
-# context("Wind direction")
-#
-# test_that("Wind direction annual and monthly", {
-#   dd <- eca.input('regressionInput/DD_STAID000162.txt', 'DD', 'DATE')
-#
-#   ci_wind <- climdexInput.raw(wind_dir=dd$DD, wind_dir.dates = dd$DATE, base.range=c(1961, 1991))
-#
-#   ## wind direction
-#   ci_ddnorth   <- climdex.ddnorth(ci_wind, freq=c("monthly"))
-#   ci_ddeast <- climdex.ddeast(ci_wind, freq=c("monthly"))
-#   ci_ddsouth <- climdex.ddsouth(ci_wind, freq=c("annual"))
-#   ci_ddwest <- climdex.ddwest(ci_wind, freq=c("annual"))
-#
-#   expect_equal_to_reference(ci_ddnorth, "regressionOutput/ddnorth_deBilt.rds")
-#   expect_equal_to_reference(ci_ddeast, "regressionOutput/ddeast_deBilt.rds")
-#   expect_equal_to_reference(ci_ddsouth, "regressionOutput/ddsouth_deBilt.rds")
-#   expect_equal_to_reference(ci_ddwest, "regressionOutput/ddwest_deBilt.rds")
-#
-# })
+context("Wind direction")
+
+test_that("Wind direction annual and monthly", {
+  dd <- eca.input('regressionInput/DD_STAID000162.txt', 'DD', 'DATE')
+
+  ci_wind <- climdexInput.raw(wind_dir=dd$DD, wind_dir.dates = dd$DATE, base.range=c(1961, 1991))
+
+  ## wind direction
+  ci_ddnorth   <- climdex.ddnorth(ci_wind, freq=c("monthly"))
+  ci_ddeast <- climdex.ddeast(ci_wind, freq=c("monthly"))
+  ci_ddsouth <- climdex.ddsouth(ci_wind, freq=c("annual"))
+  ci_ddwest <- climdex.ddwest(ci_wind, freq=c("annual"))
+
+  expect_equal_to_reference(ci_ddnorth, "regressionOutput/ddnorth_deBilt.rds")
+  expect_equal_to_reference(ci_ddeast, "regressionOutput/ddeast_deBilt.rds")
+  expect_equal_to_reference(ci_ddsouth, "regressionOutput/ddsouth_deBilt.rds")
+  expect_equal_to_reference(ci_ddwest, "regressionOutput/ddwest_deBilt.rds")
+
+})
 
 ####################################
 ### Snow indices
 ####################################
 #
-# context("Snow depth")
-#
-# test_that("Snow annual & monthly", {
-#   snowD <- eca.input('regressionInput/SD_STAID000242.txt', 'SD', 'DATE')
-#
-#   expect_equal_to_reference(snowD, "regressionOutput/snowD_deBilt.rds")
-#
-#   ci_snow <- climdexInput.raw(snow = snowD$SD, snow.dates = snowD$DATE, base.range=c(1961, 1991))
-#
-#   expect_equal_to_reference(ci_snow, "regressionOutput/ci_snow_Lugano.rds")
-#
-#   ## snow depth
-#   ci_sdd   <- climdex.sdd(ci_snow, freq=c("monthly"))
-#   ci_sdx <- climdex.sdx(ci_snow, freq=c("monthly"))
-#   ci_sd <- climdex.sd(ci_snow, freq=c("annual"))
-#
-#   expect_equal_to_reference(ci_sdd, "regressionOutput/sdd_deBilt.rds")
-#   expect_equal_to_reference(ci_sdx, "regressionOutput/sdx_deBilt.rds")
-#   expect_equal_to_reference(ci_sd, "regressionOutput/sd_deBilt.rds")
-#
-# })
+context("Snow depth")
+
+test_that("Snow annual & monthly", {
+  snowD <- eca.input('regressionInput/SD_STAID000242.txt', 'SD', 'DATE')
+
+  expect_equal_to_reference(snowD, "regressionOutput/snowD_Lugano.rds")
+
+  ci_snow <- climdexInput.raw(snow = snowD$SD, snow.dates = snowD$DATE, base.range=c(1961, 1991))
+
+  expect_equal_to_reference(ci_snow, "regressionOutput/ci_snow_Lugano.rds")
+
+  ## snow depth
+  ci_sdd   <- climdex.sdd(ci_snow, threshold=1, freq=c("monthly"))
+  ci_sdx <- climdex.sdx(ci_snow, freq=c("monthly"))
+  ci_sd <- climdex.sd(ci_snow, freq=c("annual"))
+
+  expect_equal_to_reference(ci_sdd, "regressionOutput/sdd_Lugano.rds")
+  expect_equal_to_reference(ci_sdx, "regressionOutput/sdx_Lugano.rds")
+  expect_equal_to_reference(ci_sd, "regressionOutput/sd_Lugano.rds")
+
+})
 
 ####################################
 ### Cloud indices
 ####################################
 # 
-# context("Cloud indices")
-# 
-# test_that("Cloud indices annual & monthly", {
-#   cloud <- eca.input('regressionInput/CC_STAID000162.txt', 'CC', 'DATE')
-# 
-#   expect_equal_to_reference(cloud, "regressionOutput/cloud_deBilt.rds")
-# 
-#   ci_cloud <- climdexInput.raw(cloud = cloud$CC, cloud.dates = cloud$DATE, base.range=c(1961, 1991))
-# 
-#   expect_equal_to_reference(ci_cloud, "regressionOutput/ci_cloud_deBilt.rds")
-# 
-#   ## snow depth
-#   ci_cc   <- climdex.cc(ci_cloud, freq=c("monthly"))
-#   ci_cc6 <- climdex.cc6(ci_cloud, freq=c("monthly"))
-#   ci_cc2 <- climdex.cc2(ci_cloud, freq=c("annual"))
-# 
-#   expect_equal_to_reference(ci_cc, "regressionOutput/cc_deBilt.rds")
-#   expect_equal_to_reference(ci_cc6, "regressionOutput/cc6_deBilt.rds")
-#   expect_equal_to_reference(ci_cc2, "regressionOutput/cc2_deBilt.rds")
-# 
-# })
+context("Cloud indices")
+
+test_that("Cloud indices annual & monthly", {
+  cloud <- eca.input('regressionInput/CC_STAID000162.txt', 'CC', 'DATE')
+
+  expect_equal_to_reference(cloud, "regressionOutput/cloud_deBilt.rds")
+
+  ci_cloud <- climdexInput.raw(cloud = cloud$CC, cloud.dates = cloud$DATE, base.range=c(1961, 1991))
+
+  expect_equal_to_reference(ci_cloud, "regressionOutput/ci_cloud_deBilt.rds")
+
+  ## snow depth
+  ci_cc   <- climdex.cc(ci_cloud, freq=c("monthly"))
+  ci_cc6 <- climdex.cc6(ci_cloud, freq=c("monthly"))
+  ci_cc2 <- climdex.cc2(ci_cloud, freq=c("annual"))
+
+  expect_equal_to_reference(ci_cc, "regressionOutput/cc_deBilt.rds")
+  expect_equal_to_reference(ci_cc6, "regressionOutput/cc6_deBilt.rds")
+  expect_equal_to_reference(ci_cc2, "regressionOutput/cc2_deBilt.rds")
+
+})
 
 ####################################
 ### Sun indices
 ####################################
 # 
-# context("Sun indices")
-# 
-# test_that("Sun index monthly", {
-#   sunshine <- eca.input('regressionInput/SS_STAID000162.txt', 'SS', 'DATE')
-# 
-#   expect_equal_to_reference(sunshine, "regressionOutput/sunshine_deBilt.rds")
-# 
-#   ci_sun <- climdexInput.raw(sun = sunshine$SS, sun.dates = sunshine$DATE, base.range=c(1961, 1991))
-# 
-#   expect_equal_to_reference(ci_sun, "regressionOutput/ci_sun_deBilt.rds")
-# 
-#   ## snow depth
-#   ci_ss  <- climdex.ss(ci_sun, freq=c("monthly"))
-# 
-#   expect_equal_to_reference(ci_ss, "regressionOutput/ss_deBilt.rds")
-# 
-# })
+context("Sun indices")
+
+test_that("Sun index monthly", {
+  sunshine <- eca.input('regressionInput/SS_STAID000162.txt', 'SS', 'DATE')
+
+  expect_equal_to_reference(sunshine, "regressionOutput/sunshine_deBilt.rds")
+
+  ci_sun <- climdexInput.raw(sun = sunshine$SS, sun.dates = sunshine$DATE, base.range=c(1961, 1991))
+
+  expect_equal_to_reference(ci_sun, "regressionOutput/ci_sun_deBilt.rds")
+
+  ## snow depth
+  ci_ss  <- climdex.ss(ci_sun, freq=c("monthly"))
+
+  expect_equal_to_reference(ci_ss, "regressionOutput/ss_deBilt.rds")
+
+})
 
 

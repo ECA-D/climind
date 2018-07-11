@@ -15,17 +15,9 @@ climdex.cw(ci, freq = c("monthly", "annual", "halfyear", "seasonal"),
 A vector containing an annual timeseries of precipitation in wet days.
 }
 \description{
-This function computes the climdex index CW.
-}
-\details{
 This function takes a climdexInput object as input and computes the climdex
 index CW: the number of days where TG<25 & RR>75 (for wet days: days where precipitation is at least 1mm).
 }
-\references{
-\url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
+\details{
+This function computes the climdex index CW.
 }
-\seealso{
-\code{\link{climdexInput.raw}}, \code{\link{climdexInput.csv}}.
-}
-\keyword{climate}
-\keyword{ts}

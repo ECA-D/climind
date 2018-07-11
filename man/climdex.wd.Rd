@@ -16,16 +16,7 @@ A vector containing an annual timeseries of precipitation in wet days.
 }
 \description{
 This function computes the climdex index WD.
-}
-\details{
+
 This function takes a climdexInput object as input and computes the climdex
 index WD: the number of days where TG>75 & RR<25 (for wet days: days where precipitation is at least 1mm).
 }
-\references{
-\url{http://etccdi.pacificclimate.org/list_27_indices.shtml}
-}
-\seealso{
-\code{\link{climdexInput.raw}}, \code{\link{climdexInput.csv}}.
-}
-\keyword{climate}
-\keyword{ts}
