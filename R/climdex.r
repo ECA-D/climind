@@ -419,7 +419,8 @@ climdexInput.raw <- function(tmax=NULL, tmax.dates=NULL,
   days.in.base <- sapply(quantile.dates, get.num.days.in.range, bs.date.range)
 
   ## Check that provided quantiles, if any, are valid
-  check.quantile.validity(quantiles, present.var.list, days.in.base, vars.require.quantiles)
+  ## if (!is.null(quantiles)) added by CH 2018
+  if (!is.null(quantiles)) check.quantile.validity(quantiles, present.var.list, days.in.base, vars.require.quantiles)
 
   data.in.base.period <- any(days.in.base != 0)
 
