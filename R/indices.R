@@ -1002,12 +1002,12 @@ climdex.HI <- function(ci,freq=c("annual"),cur_sub){
   year.series <- get.years(ci@dates)
   valid.months <- month.series >=4 & month.series <=9
   hi_coef <-  if (cur_sub <=40) {hi_coeff <- 1 
-  }else if(cur_sub >40 & cur_sub <42) {hi_coef <- 1.02
-  }else if(cur_sub >42 & cur_sub <44) {hi_coef <- 1.03
-  }else if(cur_sub >44 & cur_sub <48) {hi_coef <- 1.04
-  }else if(cur_sub >46 & cur_sub <48) {hi_coef <- 1.05
-  }else if(cur_sub >48 & cur_sub <50) {hi_coef <- 1.06 
-  }else if(cur_sub >=50){hi_coef <- 1}
+  }else if(cur_sub >40 & cur_sub <=42) {hi_coef <- 1.02
+  }else if(cur_sub >42 & cur_sub <=44) {hi_coef <- 1.03
+  }else if(cur_sub >44 & cur_sub <=46) {hi_coef <- 1.04
+  }else if(cur_sub >46 & cur_sub <=48) {hi_coef <- 1.05
+  }else if(cur_sub >48 & cur_sub <=50) {hi_coef <- 1.06 
+  }else if(cur_sub >50){hi_coef <- 1}
   valid.sel<- year.series[valid.months]
   tempdata <- ((((tempavg -10) + (tempmax -10)) /2) * hi_coef)
   dat_final <- tempdata[valid.months]
