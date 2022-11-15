@@ -509,7 +509,7 @@ climdex.cwd <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal"),
 #' @templateVar cdxvar r75p
 #' 
 #' @export
-climdex.r75p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
+climdex.r75pfrac <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec)); 
   return(total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], ci@quantiles$prec['q75'], ">") * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -528,7 +528,7 @@ climdex.r75p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")
 #' @templateVar cdxvar r95p
 #' 
 #' @export
-climdex.r95p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
+climdex.r95pfrac <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec)); 
   return(total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], ci@quantiles$prec['q95'], ">") * ci@namasks[[match.arg(freq)]]$prec) }
 
@@ -546,7 +546,7 @@ climdex.r95p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")
 #' @templateVar cdxvar r99p
 #' 
 #' @export
-climdex.r99p <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
+climdex.r99ptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec));
   return(total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], ci@quantiles$prec['q99'], ">") * ci@namasks[[match.arg(freq)]]$prec) }
 
