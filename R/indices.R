@@ -546,7 +546,7 @@ climdex.r95pfrac <- function(ci, freq=c("monthly", "annual", "halfyear", "season
 #' @templateVar cdxvar r99p
 #' 
 #' @export
-climdex.r99ptot <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
+climdex.r99pfrac <- function(ci, freq=c("monthly", "annual", "halfyear", "seasonal")) { 
   stopifnot(!is.null(ci@data$prec) && !is.null(ci@quantiles$prec));
   return(total.precip.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], ci@quantiles$prec['q99'], ">") * ci@namasks[[match.arg(freq)]]$prec) }
 
